@@ -1,4 +1,10 @@
-import { ReactNode, createContext, useContext, useState } from "react";
+import {
+  ReactNode,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { supabase } from "../config/supabase.config";
 import {
   AuthResponse,
@@ -42,6 +48,19 @@ export const useAuthContext = () => useContext(AuthProviderContext);
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
+
+  useEffect(() => {
+    const { data } = supabase.auth.onAuthStateChange(async (_, session) => {
+      if (!session) return router.push("/(auth)");
+      const user = await getUser(session.user.id);
+      setUser(user);
+      router.push("/(tabs)");
+    });
+
+    return () => {
+      return data.subscription.unsubscribe();
+    };
+  }, []);
 
   const signIn = async ({ email, password }: SignInParams) => {
     const response = await supabase.auth.signInWithPassword({

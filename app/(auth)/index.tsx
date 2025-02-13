@@ -51,11 +51,11 @@ export default function AuthScreen() {
               <TextInput
                 onBlur={onBlur}
                 onChangeText={onChange}
+                textContentType="emailAddress"
                 value={value}
                 placeholder="Your email"
                 keyboardType="email-address"
                 autoComplete="email"
-                textContentType="emailAddress"
                 className="w-full rounded-lg bg-white p-4 border border-gray-300"
               />
             )}
