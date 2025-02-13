@@ -50,7 +50,12 @@ export default function TabLayout() {
           title: "",
           tabBarIcon: () => (
             <View className="rounded-full size-20 -mt-8">
-              <Ionicons name="add-circle" size={70} color="black" />
+              <Ionicons
+                name="add-circle"
+                size={70}
+                color="black"
+                className="bg-gray-100 rounded-full"
+              />
               <View className="w-[80%] mx-auto h-2 rounded-[100%] bg-black opacity-20" />
             </View>
           ),
