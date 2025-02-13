@@ -4,6 +4,8 @@ import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import "react-native-reanimated";
 
+import { supabase } from "../shared/config/supabase.config";
+
 import "./global.css";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
