@@ -1,6 +1,6 @@
 import { Tabs } from "expo-router";
 import React from "react";
-import { Platform, Text, TouchableOpacity, View } from "react-native";
+import { Platform, TouchableOpacity, View } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 export default function TabLayout() {
@@ -49,12 +49,10 @@ export default function TabLayout() {
         options={{
           title: "",
           tabBarIcon: () => (
-            <TouchableOpacity
-              activeOpacity={1}
-              className="absolute -left-6 -bottom-6 -right-5"
-            >
-              <Ionicons name="add-circle" size={75} color="black" />
-            </TouchableOpacity>
+            <View className="rounded-full size-20 -mt-8">
+              <Ionicons name="add-circle" size={70} color="black" />
+              <View className="w-[80%] mx-auto h-2 rounded-[100%] bg-black opacity-20" />
+            </View>
           ),
         }}
       />
