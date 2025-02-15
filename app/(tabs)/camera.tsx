@@ -30,11 +30,9 @@ export default function CameraScreen() {
   const toggleRecording = async () => {
     if (isRecording) {
       setIsRecording(false);
-      console.log("Toggling recording: ", false);
       cameraRef.current?.stopRecording();
     } else {
       setIsRecording(true);
-      console.log("Toggling recording: ", true);
       const video = await cameraRef.current?.recordAsync();
       video?.uri && setVideoUri(video.uri);
     }
@@ -43,9 +41,6 @@ export default function CameraScreen() {
   const saveVideo = () => {
     console.log(videoUri);
   };
-
-  console.log("Is recording: ", isRecording);
-  console.log("Camera ref: ", cameraRef);
 
   return (
     <View className="flex-1 justify-center">
