@@ -7,8 +7,12 @@ import {
 } from "expo-camera";
 import { useEffect, useRef, useState } from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { supabase } from "@/shared/config/supabase.config";
+import { useAuthContext } from "@/shared/context/AuthProvider";
 
 export default function CameraScreen() {
+  const { user } = useAuthContext();
+
   const [facing, setFacing] = useState<CameraType>("back");
   const [permission, requestPermission] = useCameraPermissions();
   const [isRecording, setIsRecording] = useState(false);
@@ -48,18 +52,41 @@ export default function CameraScreen() {
       cameraRef.current?.stopRecording();
     } else {
       setIsRecording(true);
-      console.log("Before recording video");
       const video = await cameraRef.current?.recordAsync();
-      console.log("Recording video: ", video);
       video?.uri && setVideoUri(video.uri);
     }
   };
 
-  const saveVideo = () => {
+  const saveVideo = async () => {
     console.log(videoUri);
-  };
 
-  console.log(videoUri);
+    const formData = new FormData();
+    const fileName = videoUri.split("/").pop();
+    formData.append("file", {
+      uri: videoUri,
+      name: `${fileName}`,
+      type: `video/${fileName?.split(".").pop()}`,
+    } as unknown as Blob);
+
+    const { data, error } = await supabase.storage
+      .from("videos")
+      .upload(`${fileName}`, formData, {
+        upsert: false,
+        cacheControl: "3600000000",
+      });
+
+    if (error) console.error(error);
+
+    console.log(data, user);
+
+    const { error: insertError } = await supabase.from("Video").insert({
+      uri: data?.path,
+      user_id: user?.id,
+      title: "Test title added.",
+    });
+
+    if (insertError) console.error(insertError);
+  };
 
   return (
     <View className="flex-1 justify-center">
