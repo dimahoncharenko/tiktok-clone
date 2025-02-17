@@ -63,10 +63,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }, []);
 
   const signIn = async ({ email, password }: SignInParams) => {
+    console.log("Is about to sign in: ", email, password);
+
     const response = await supabase.auth.signInWithPassword({
       email,
       password,
     });
+
+    console.log("After sign in: ", response);
 
     if (response.error) throw response.error;
 

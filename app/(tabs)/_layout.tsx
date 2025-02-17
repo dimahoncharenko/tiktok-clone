@@ -1,6 +1,6 @@
 import { Tabs, useRouter } from "expo-router";
 import React from "react";
-import { Platform, View } from "react-native";
+import { Platform, TouchableOpacity, View } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 export default function TabLayout() {
@@ -47,11 +47,18 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="camera"
+        name="camera-tab"
         options={{
           title: "",
+
           tabBarIcon: () => (
-            <View className="rounded-full size-20 -mt-8">
+            <TouchableOpacity
+              className="rounded-full size-20 -mt-8"
+              onPress={(event) => {
+                event.preventDefault();
+                router.push("/camera");
+              }}
+            >
               <Ionicons
                 name="add-circle"
                 size={70}
@@ -59,7 +66,7 @@ export default function TabLayout() {
                 className="bg-gray-100 rounded-full"
               />
               <View className="w-[80%] mx-auto h-2 rounded-[100%] bg-black opacity-20" />
-            </View>
+            </TouchableOpacity>
           ),
         }}
       />
