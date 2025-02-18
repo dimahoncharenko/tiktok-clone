@@ -4,15 +4,17 @@ import { useEffect, useState } from "react";
 import { Camera } from "expo-camera";
 
 import { useVideo } from "../lib/useVideo";
-import { supabase } from "@/shared/config/supabase.config";
 import { useAuthContext } from "@/shared/context/AuthProvider";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { saveUserVideo } from "../lib/utils";
+import { useRouter } from "expo-router";
 
 type Props = {
   uri: string;
 };
 
 export const VideoPlayer = ({ uri }: Props) => {
+  const router = useRouter();
   const { user } = useAuthContext();
   const { videoPlayer, videoIsPlaying } = useVideo({ uri });
   const [recordPermissions, setRecordingPermissions] = useState(false);
@@ -28,31 +30,21 @@ export const VideoPlayer = ({ uri }: Props) => {
 
   if (!recordPermissions) return null;
 
-  const saveVideo = async () => {
-    const formData = new FormData();
-    const fileName = uri.split("/").pop();
-    formData.append("file", {
-      uri,
-      name: `${fileName}`,
-      type: `video/${fileName?.split(".").pop()}`,
-    } as unknown as Blob);
+  const turnBack = () => {
+    router.replace("/camera");
+  };
 
-    const { data, error } = await supabase.storage
-      .from("videos")
-      .upload(`${fileName}`, formData, {
-        upsert: false,
-        cacheControl: "3600000000",
-      });
+  const handleSave = async () => {
+    try {
+      await saveUserVideo(`${user?.id}`, uri);
+      turnBack();
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
-    if (error) console.error(error);
-
-    const { error: insertError } = await supabase.from("Video").insert({
-      uri: data?.path,
-      user_id: user?.id,
-      title: "Test title added.",
-    });
-
-    if (insertError) console.error(insertError);
+  const handleClose = () => {
+    turnBack();
   };
 
   const { height, width } = Dimensions.get("window");
@@ -78,10 +70,10 @@ export const VideoPlayer = ({ uri }: Props) => {
             size={50}
           />
         </TouchableOpacity>
-        <TouchableOpacity onPress={saveVideo}>
+        <TouchableOpacity onPress={handleSave}>
           <Ionicons name="add-circle" size={70} color="white" />
         </TouchableOpacity>
-        <TouchableOpacity className="mb-[10px]">
+        <TouchableOpacity className="mb-[10px]" onPress={handleClose}>
           <Ionicons size={50} name="close-circle-outline" color="white" />
         </TouchableOpacity>
       </View>
