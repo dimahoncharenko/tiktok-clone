@@ -7,10 +7,10 @@ import * as ImagePicker from "expo-image-picker";
 import { PermissionDisplayError } from "@/components/permission-display-error";
 
 type Props = {
-  recordVIdeo: (value: React.SetStateAction<string>) => void;
+  recordVideo: (value: React.SetStateAction<string>) => void;
 };
 
-export const CameraControls = ({ recordVIdeo }: Props) => {
+export const CameraControls = ({ recordVideo }: Props) => {
   const cameraRef = useRef<CameraView>(null);
   const [facing, setFacing] = useState<CameraType>("back");
   const [isRecording, setIsRecording] = useState(false);
@@ -28,7 +28,7 @@ export const CameraControls = ({ recordVIdeo }: Props) => {
       quality: 0.1,
     });
 
-    result?.assets?.[0] && recordVIdeo(result.assets[0].uri);
+    result?.assets?.[0] && recordVideo(result.assets[0].uri);
   };
 
   function toggleCameraFacing() {
@@ -42,7 +42,7 @@ export const CameraControls = ({ recordVIdeo }: Props) => {
     } else {
       setIsRecording(true);
       const video = await cameraRef.current?.recordAsync();
-      video?.uri && recordVIdeo(video.uri);
+      video?.uri && recordVideo(video.uri);
     }
   };
 

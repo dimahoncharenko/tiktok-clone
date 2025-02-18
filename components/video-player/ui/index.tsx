@@ -8,12 +8,14 @@ import { useAuthContext } from "@/shared/context/AuthProvider";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { saveUserVideo } from "../lib/utils";
 import { useRouter } from "expo-router";
+import clsx from "clsx";
 
 type Props = {
   uri: string;
+  kind: "record" | "feed";
 };
 
-export const VideoPlayer = ({ uri }: Props) => {
+export const VideoPlayer = ({ uri, kind }: Props) => {
   const router = useRouter();
   const { user } = useAuthContext();
   const { videoPlayer, videoIsPlaying } = useVideo({ uri });
@@ -47,10 +49,19 @@ export const VideoPlayer = ({ uri }: Props) => {
     turnBack();
   };
 
+  const reserveTabsHeight = (height: number) => {
+    return height - 50;
+  };
+
   const { height, width } = Dimensions.get("window");
 
   return (
-    <View className="flex-1 items-center justify-center">
+    <View
+      className={clsx(
+        "flex-1 items-center",
+        kind === "record" && "justify-center"
+      )}
+    >
       <View className="absolute z-10 pb-5 left-0 right-0 bottom-0 top-0 flex justify-center items-end flex-row gap-5">
         <TouchableOpacity
           className="mb-[10px]"
@@ -82,7 +93,7 @@ export const VideoPlayer = ({ uri }: Props) => {
         style={{
           flex: 1,
           width,
-          height,
+          height: kind === "feed" ? reserveTabsHeight(height) : height,
           backgroundColor: "black",
         }}
         player={videoPlayer}

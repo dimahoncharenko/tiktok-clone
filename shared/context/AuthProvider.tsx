@@ -5,13 +5,14 @@ import {
   useEffect,
   useState,
 } from "react";
-import { supabase } from "../config/supabase.config";
 import {
   AuthResponse,
   AuthTokenResponsePassword,
   User,
 } from "@supabase/supabase-js";
 import { useRouter } from "expo-router";
+
+import { authService, storageService } from "../lib/utils";
 
 type AuthProviderContext = {
   user: User | null;
@@ -50,29 +51,25 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const router = useRouter();
 
   useEffect(() => {
-    const { data } = supabase.auth.onAuthStateChange(async (_, session) => {
-      if (!session) return router.push("/(auth)");
-      const user = await getUser(session.user.id);
-      setUser(user);
-      router.push("/(tabs)");
-    });
+    const { unsubscribe } = authService.subscribeToAuthChange(
+      async (_, session) => {
+        if (!session) return router.push("/(auth)");
+        const user = await getUser(session.user.id);
+        setUser(user);
+        router.push("/(tabs)");
+      }
+    );
 
     return () => {
-      return data.subscription.unsubscribe();
+      return unsubscribe();
     };
   }, []);
 
   const signIn = async ({ email, password }: SignInParams) => {
-    console.log("Is about to sign in: ", email, password);
-
-    const response = await supabase.auth.signInWithPassword({
+    const response = await authService.signInWithEmailAndPassword({
       email,
       password,
     });
-
-    console.log("After sign in: ", response);
-
-    if (response.error) throw response.error;
 
     const user = await getUser(response.data.user.id);
     setUser(user);
@@ -82,13 +79,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const getUser = async (id: string) => {
     try {
-      const { data, error } = await supabase
-        .from("User")
-        .select("*")
-        .eq("id", id)
-        .single();
-
-      if (error) throw error;
+      const data = await storageService.getUser(id);
 
       return data;
     } catch (err) {
@@ -98,13 +89,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const addUser = async ({ email, id, username }: GetUserParams) => {
     try {
-      const { error } = await supabase.from("User").insert({
-        email,
-        id,
-        username,
-      });
-
-      if (error) throw error;
+      await storageService.addUser({ email, id, username });
 
       const user = await getUser(id);
       setUser(user);
@@ -114,12 +99,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   const signUp = async ({ email, password, username }: SignUpParams) => {
-    const response = await supabase.auth.signUp({
-      email: `${email}`,
-      password: `${password}`,
+    const response = await authService.signUpWithEmailAndPassword({
+      email,
+      password,
     });
-
-    if (response.error) throw response.error;
 
     await addUser({ email, id: `${response.data.user?.id}`, username });
 
@@ -127,9 +110,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   const signOut = async () => {
-    const { error } = await supabase.auth.signOut();
-
-    if (error) throw error;
+    await authService.signOut();
 
     setUser(null);
     router.push("/(auth)");
