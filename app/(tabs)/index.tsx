@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
-import { Text, View } from "react-native";
+import { Dimensions, View } from "react-native";
 
-import { useAuthContext } from "@/shared/context/AuthProvider";
 import { storageService } from "@/shared/lib/utils";
 import { VideoPlayer } from "@/components/video-player";
 import { FlatList } from "react-native";
@@ -27,13 +26,12 @@ export default function HomeScreen() {
 
       const urls: any[] = videos
         .map((item) => {
-          item.signedUrl = response.find(
+          const signedUrl = response.find(
             (url) => url.path === item.uri
           )?.signedUrl;
-
-          return item;
+          return signedUrl ? { ...item, signedUrl } : null;
         })
-        .filter((item) => item.signedUrl);
+        .filter(Boolean);
 
       return urls;
     } catch (err) {
@@ -41,14 +39,35 @@ export default function HomeScreen() {
     }
   };
 
-  console.log("VIDEOS: ", videos);
-
   return (
     <View className="flex-1 items-center justify-center">
       <FlatList
-        data={videos}
+        keyExtractor={(item) => item.id.toString()}
+        snapToInterval={Dimensions.get("window").height}
+        snapToStart
+        removeClippedSubviews
+        getItemLayout={(_, index) => ({
+          length: Dimensions.get("window").height,
+          offset: Dimensions.get("window").height * index,
+          index,
+        })}
+        decelerationRate="fast"
+        data={videos.slice(1)}
+        className="h-full"
         renderItem={({ item }) => {
-          return <VideoPlayer kind="feed" uri={item.signedUrl} />;
+          if (!item?.signedUrl) {
+            return <View className="h-full bg-black" />;
+          }
+          return (
+            <VideoPlayer
+              playerConfig={(player) => {
+                player.loop = true;
+                player.play();
+              }}
+              kind="feed"
+              uri={item.signedUrl}
+            />
+          );
         }}
       />
     </View>

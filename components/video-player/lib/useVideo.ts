@@ -1,18 +1,32 @@
 import { useEvent } from "expo";
-import { useVideoPlayer } from "expo-video";
+import { VideoPlayer, useVideoPlayer } from "expo-video";
 
 type Props = {
   uri: string;
+  playerConfig?(player: VideoPlayer): void;
 };
 
-export const useVideo = ({ uri }: Props) => {
+const defaultPlayerConfig: Props["playerConfig"] = (player) => {
+  player.loop = true;
+};
+
+export const useVideo = ({
+  uri,
+  playerConfig = defaultPlayerConfig,
+}: Props) => {
+  console.log("Passed uri: ", uri);
+
   const videoPlayer = useVideoPlayer(uri, (player) => {
-    player.loop = true;
+    playerConfig(player);
   });
+
+  console.log("Received video player: ", videoPlayer);
 
   const { isPlaying: videoIsPlaying } = useEvent(videoPlayer, "playingChange", {
     isPlaying: videoPlayer.playing,
   });
+
+  console.log("Player: ", videoPlayer);
 
   return { videoPlayer, videoIsPlaying };
 };

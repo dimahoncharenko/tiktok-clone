@@ -1,4 +1,4 @@
-import { VideoView } from "expo-video";
+import { VideoPlayer as TVideoPlayer, VideoView } from "expo-video";
 import { Dimensions, TouchableOpacity, View } from "react-native";
 import { useEffect, useState } from "react";
 import { Camera } from "expo-camera";
@@ -13,12 +13,14 @@ import clsx from "clsx";
 type Props = {
   uri: string;
   kind: "record" | "feed";
+  playerConfig?(player: TVideoPlayer): void;
 };
 
-export const VideoPlayer = ({ uri, kind }: Props) => {
+export const VideoPlayer = ({ uri, kind, playerConfig }: Props) => {
   const router = useRouter();
   const { user } = useAuthContext();
-  const { videoPlayer, videoIsPlaying } = useVideo({ uri });
+
+  const { videoPlayer, videoIsPlaying } = useVideo({ uri, playerConfig });
   const [recordPermissions, setRecordingPermissions] = useState(false);
 
   useEffect(() => {
@@ -89,12 +91,11 @@ export const VideoPlayer = ({ uri, kind }: Props) => {
         </TouchableOpacity>
       </View>
       <VideoView
-        className="flex-1"
+        className="flex-1 bg-black z-40"
         style={{
-          flex: 1,
           width,
           height: kind === "feed" ? reserveTabsHeight(height) : height,
-          backgroundColor: "black",
+          zIndex: 100,
         }}
         player={videoPlayer}
         contentFit="cover"
