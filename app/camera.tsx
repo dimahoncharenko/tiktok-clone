@@ -10,7 +10,7 @@ export default function CameraScreen() {
   return (
     <View className="flex-1 justify-center">
       {videoUri ? (
-        <VideoPlayer kind="record" uri={videoUri} />
+        <VideoPlayer viewable={true} kind="record" uri={videoUri} />
       ) : (
         <CameraControls recordVideo={setVideoUri} />
       )}
