@@ -1,5 +1,12 @@
 import { AuthChangeEvent, Session } from "@supabase/supabase-js";
+import { twMerge } from "tailwind-merge";
+import clsx, { ClassValue } from "clsx";
+
 import { supabase } from "../config/supabase.config";
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
 
 type VideoRecordParams = {
   uri: string;

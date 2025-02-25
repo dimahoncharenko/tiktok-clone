@@ -1,12 +1,24 @@
+import { Dimensions, View, VirtualizedList } from "react-native";
 import { useEffect, useState } from "react";
-import { Dimensions, View } from "react-native";
+import { usePathname } from "expo-router";
 
 import { storageService } from "@/shared/lib/utils";
 import { VideoPlayer } from "@/components/video-player";
-import { FlatList } from "react-native";
 
 export default function HomeScreen() {
+  const pathname = usePathname();
+
   const [videos, setVideos] = useState<any[]>([]);
+  const [stoppedVideo, setStoppedVideo] = useState(false);
+  const [viewableIndex, setViewableIndex] = useState(-1);
+
+  useEffect(() => {
+    if (pathname !== "/") {
+      setStoppedVideo(true);
+    } else {
+      setStoppedVideo(false);
+    }
+  }, [pathname]);
 
   useEffect(() => {
     (async () => {
@@ -41,10 +53,13 @@ export default function HomeScreen() {
 
   return (
     <View className="flex-1 items-center justify-center">
-      <FlatList
-        keyExtractor={(item) => item.id.toString()}
+      <VirtualizedList
+        keyExtractor={(item: any) => item.id.toString()}
         snapToInterval={Dimensions.get("window").height}
         snapToStart
+        onViewableItemsChanged={({ viewableItems }) => {
+          setViewableIndex(viewableItems[0].index || 0);
+        }}
         removeClippedSubviews
         getItemLayout={(_, index) => ({
           length: Dimensions.get("window").height,
@@ -52,9 +67,11 @@ export default function HomeScreen() {
           index,
         })}
         decelerationRate="fast"
-        data={videos.slice(1)}
+        data={videos}
+        getItemCount={() => videos.length}
+        getItem={(videos, index) => videos[index]}
         className="h-full"
-        renderItem={({ item }) => {
+        renderItem={({ item, index }) => {
           if (!item?.signedUrl) {
             return <View className="h-full bg-black" />;
           }
@@ -64,6 +81,7 @@ export default function HomeScreen() {
                 player.loop = true;
                 player.play();
               }}
+              viewable={viewableIndex === index && !stoppedVideo}
               kind="feed"
               uri={item.signedUrl}
             />
