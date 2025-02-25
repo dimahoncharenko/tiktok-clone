@@ -1,9 +1,12 @@
 import { useEvent } from "expo";
+import { Camera } from "expo-camera";
 import { VideoPlayer, useVideoPlayer } from "expo-video";
+import { useEffect, useState } from "react";
 
 type Props = {
   uri: string;
   playerConfig?(player: VideoPlayer): void;
+  stop?: boolean;
 };
 
 const defaultPlayerConfig: Props["playerConfig"] = (player) => {
@@ -13,7 +16,10 @@ const defaultPlayerConfig: Props["playerConfig"] = (player) => {
 export const useVideo = ({
   uri,
   playerConfig = defaultPlayerConfig,
+  stop,
 }: Props) => {
+  const [recordPermissions, setRecordingPermissions] = useState(false);
+
   const videoPlayer = useVideoPlayer(uri, (player) => {
     playerConfig(player);
   });
@@ -22,5 +28,22 @@ export const useVideo = ({
     isPlaying: videoPlayer.playing,
   });
 
-  return { videoPlayer, videoIsPlaying };
+  useEffect(() => {
+    if (!stop) {
+      videoPlayer.replay();
+    } else {
+      videoPlayer.pause();
+    }
+  }, [stop]);
+
+  useEffect(() => {
+    (async () => {
+      const cameraStatus = await Camera.requestCameraPermissionsAsync();
+      const soundStatus = await Camera.requestMicrophonePermissionsAsync();
+
+      setRecordingPermissions(cameraStatus.granted && soundStatus.granted);
+    })();
+  }, []);
+
+  return { videoPlayer, videoIsPlaying, permitted: recordPermissions };
 };

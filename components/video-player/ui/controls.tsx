@@ -33,7 +33,12 @@ export const VideoControls = ({ paused, player, saveVideo, hidden }: Props) => {
   };
 
   return (
-    <View className="z-10 pb-5 flex justify-center items-end flex-row gap-5">
+    <View
+      style={{
+        zIndex: 110,
+      }}
+      className="absolute bottom-0 pb-5 flex justify-center items-end flex-row gap-5"
+    >
       <TouchableOpacity
         className="mb-[10px]"
         onPress={() => {

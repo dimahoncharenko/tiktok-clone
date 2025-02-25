@@ -2,8 +2,8 @@ import { Dimensions, View, VirtualizedList } from "react-native";
 import { useEffect, useState } from "react";
 import { usePathname } from "expo-router";
 
-import { storageService } from "@/shared/lib/utils";
-import { VideoPlayer } from "@/components/video-player";
+import { FeedVideo } from "@/components/feed-video";
+import { parseVideoUrlsFromStorage } from "@/lib/feed/utils";
 
 export default function HomeScreen() {
   const pathname = usePathname();
@@ -23,33 +23,12 @@ export default function HomeScreen() {
   useEffect(() => {
     (async () => {
       try {
-        const videos = await storageService.getAllVideos();
-        const parsedVideos = await parseVideoUrls(videos);
-        parsedVideos && setVideos(parsedVideos);
+        await parseVideoUrlsFromStorage(setVideos);
       } catch (err) {
         console.error(err);
       }
     })();
   }, []);
-
-  const parseVideoUrls = async (videos: any[]) => {
-    try {
-      const response = await storageService.getSignedUrls(videos);
-
-      const urls: any[] = videos
-        .map((item) => {
-          const signedUrl = response.find(
-            (url) => url.path === item.uri
-          )?.signedUrl;
-          return signedUrl ? { ...item, signedUrl } : null;
-        })
-        .filter(Boolean);
-
-      return urls;
-    } catch (err) {
-      console.error(err);
-    }
-  };
 
   return (
     <View className="flex-1 items-center justify-center">
@@ -71,22 +50,12 @@ export default function HomeScreen() {
         getItemCount={() => videos.length}
         getItem={(videos, index) => videos[index]}
         className="h-full"
-        renderItem={({ item, index }) => {
-          if (!item?.signedUrl) {
-            return <View className="h-full bg-black" />;
-          }
-          return (
-            <VideoPlayer
-              playerConfig={(player) => {
-                player.loop = true;
-                player.play();
-              }}
-              viewable={viewableIndex === index && !stoppedVideo}
-              kind="feed"
-              uri={item.signedUrl}
-            />
-          );
-        }}
+        renderItem={({ item, index }) => (
+          <FeedVideo
+            item={item}
+            show={viewableIndex === index && !stoppedVideo}
+          />
+        )}
       />
     </View>
   );
