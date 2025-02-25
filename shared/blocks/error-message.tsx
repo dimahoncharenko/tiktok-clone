@@ -1,5 +1,6 @@
 import { Text } from "react-native";
-import { clsx } from "clsx";
+
+import { cn } from "../lib/utils";
 
 type Props = {
   className?: string;
@@ -8,7 +9,7 @@ type Props = {
 
 export const ErrorMessage = ({ className, children }: Props) => {
   return (
-    <Text className={clsx("text-red-700 font-semibold text-sm", className)}>
+    <Text className={cn("text-red-700 font-semibold text-sm", className)}>
       {children}
     </Text>
   );

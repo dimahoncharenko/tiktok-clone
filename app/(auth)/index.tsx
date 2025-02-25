@@ -29,7 +29,6 @@ export default function AuthScreen() {
   const onSubmit = async (data: FormValues) => {
     try {
       await signIn(data);
-
       router.push("/(tabs)");
     } catch (err) {
       handleLoginError(err);
