@@ -3,20 +3,16 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import "react-native-reanimated";
-import { TamaguiProvider } from "tamagui";
-import { useColorScheme } from "react-native";
 
 import "./global.css";
 
 import { AuthProvider } from "@/shared/context/AuthProvider";
-import { config } from "../tamagui.config";
+import { StatusBar } from "react-native";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
@@ -32,18 +28,29 @@ export default function RootLayout() {
   }
 
   return (
-    <TamaguiProvider config={config} defaultTheme={colorScheme!}>
-      <AuthProvider>
-        <Stack>
-          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen
-            name="camera"
-            options={{ headerShown: false, presentation: "modal" }}
-          />
-          <Stack.Screen name="+not-found" />
-        </Stack>
-      </AuthProvider>
-    </TamaguiProvider>
+    <AuthProvider>
+      <Stack>
+        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+        <Stack.Screen
+          name="(tabs)"
+          options={{
+            headerShown: false,
+            statusBarTranslucent: true,
+            statusBarBackgroundColor: "transparent",
+          }}
+        />
+        <Stack.Screen name="user/[id]" options={{ headerShown: false }} />
+        <Stack.Screen
+          name="comments"
+          options={{ headerShown: false, presentation: "modal" }}
+        />
+        <Stack.Screen
+          name="camera"
+          options={{ headerShown: false, presentation: "modal" }}
+        />
+        <Stack.Screen name="+not-found" />
+      </Stack>
+      <StatusBar backgroundColor="transparent" translucent />
+    </AuthProvider>
   );
 }

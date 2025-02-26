@@ -5,14 +5,17 @@ import {
   useEffect,
   useState,
 } from "react";
-import {
-  AuthResponse,
-  AuthTokenResponsePassword,
-  User,
-} from "@supabase/supabase-js";
+import { AuthResponse, AuthTokenResponsePassword } from "@supabase/supabase-js";
 import { useRouter } from "expo-router";
 
 import { authService, storageService } from "../lib/utils";
+
+type User = {
+  created_at: string;
+  email: string;
+  id: string;
+  username: string;
+};
 
 type AuthProviderContext = {
   user: User | null;
@@ -91,7 +94,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     try {
       await storageService.addUser({ email, id, username });
 
+      console.log("addUser successful");
+
       const user = await getUser(id);
+
+      console.log("got user: ", user);
+
       setUser(user);
     } catch (err) {
       console.error(err);
@@ -103,6 +111,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       email,
       password,
     });
+
+    console.log("signUp successful: ", response.data.user?.id);
 
     await addUser({ email, id: `${response.data.user?.id}`, username });
 

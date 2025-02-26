@@ -12,7 +12,7 @@ export default function CameraScreen() {
       {videoUri ? (
         <VideoPlayer viewable={true} kind="record" uri={videoUri} />
       ) : (
-        <CameraControls recordVideo={setVideoUri} />
+        <CameraControls recordVideo={setVideoUri} uri={videoUri} />
       )}
     </View>
   );

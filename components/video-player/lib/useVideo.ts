@@ -1,3 +1,4 @@
+import { useAllPermissions } from "@/hooks/useAllPermissions";
 import { useEvent } from "expo";
 import { Camera } from "expo-camera";
 import { VideoPlayer, useVideoPlayer } from "expo-video";
@@ -18,7 +19,7 @@ export const useVideo = ({
   playerConfig = defaultPlayerConfig,
   stop,
 }: Props) => {
-  const [recordPermissions, setRecordingPermissions] = useState(false);
+  const { recordPermissions } = useAllPermissions();
 
   const videoPlayer = useVideoPlayer(uri, (player) => {
     playerConfig(player);
@@ -35,15 +36,6 @@ export const useVideo = ({
       videoPlayer.pause();
     }
   }, [stop]);
-
-  useEffect(() => {
-    (async () => {
-      const cameraStatus = await Camera.requestCameraPermissionsAsync();
-      const soundStatus = await Camera.requestMicrophonePermissionsAsync();
-
-      setRecordingPermissions(cameraStatus.granted && soundStatus.granted);
-    })();
-  }, []);
 
   return { videoPlayer, videoIsPlaying, permitted: recordPermissions };
 };
