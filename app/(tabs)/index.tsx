@@ -4,6 +4,7 @@ import { usePathname } from "expo-router";
 
 import { FeedVideo } from "@/components/feed-video";
 import { parseVideoUrlsFromStorage } from "@/lib/feed/utils";
+import { Header } from "@/components/header";
 
 export default function HomeScreen() {
   const pathname = usePathname();
@@ -31,7 +32,11 @@ export default function HomeScreen() {
   }, []);
 
   return (
-    <View className="flex-1 items-center justify-center">
+    <View className="flex-1 relative items-center justify-center">
+      <Header
+        title="For You"
+        classNames={{ root: "absolute z-50 top-10 left-0 right-0" }}
+      />
       <VirtualizedList
         keyExtractor={(item: any) => item.id.toString()}
         snapToInterval={Dimensions.get("window").height}

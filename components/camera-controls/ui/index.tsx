@@ -1,24 +1,37 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { CameraType, CameraView, useCameraPermissions } from "expo-camera";
-import { useRef, useState } from "react";
+import { Camera, CameraType, CameraView } from "expo-camera";
+import { useEffect, useRef, useState } from "react";
 import { TouchableOpacity, View } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 
 import { PermissionDisplayError } from "@/components/permission-display-error";
+import { useAllPermissions } from "@/hooks/useAllPermissions";
 
 type Props = {
   recordVideo: (value: React.SetStateAction<string>) => void;
+  uri: string;
 };
 
-export const CameraControls = ({ recordVideo }: Props) => {
+export const CameraControls = ({ recordVideo, uri }: Props) => {
   const cameraRef = useRef<CameraView>(null);
   const [facing, setFacing] = useState<CameraType>("back");
   const [isRecording, setIsRecording] = useState(false);
-  const [permission, requestPermission] = useCameraPermissions();
+  const {
+    recordPermissions,
+    cameraPermitted,
+    requestCameraPermission,
+    requestRecordPermissions,
+  } = useAllPermissions();
 
-  if (!permission) return null;
-  if (!permission.granted)
-    return <PermissionDisplayError requestPermission={requestPermission} />;
+  if (!cameraPermitted || !recordPermissions)
+    return (
+      <PermissionDisplayError
+        requestPermission={async () => {
+          await requestCameraPermission();
+          await requestRecordPermissions();
+        }}
+      />
+    );
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -36,13 +49,30 @@ export const CameraControls = ({ recordVideo }: Props) => {
   }
 
   const toggleRecording = async () => {
-    if (isRecording) {
-      setIsRecording(false);
-      cameraRef.current?.stopRecording();
+    const willRecord = !isRecording;
+
+    if (willRecord && cameraRef.current) {
+      try {
+        setIsRecording(true);
+
+        const video = await cameraRef.current.recordAsync();
+
+        if (video?.uri) {
+          recordVideo(video.uri);
+        } else {
+          console.log("No video URI returned");
+        }
+      } catch (error) {
+        console.error("Error starting recording:", error);
+        setIsRecording(false);
+      }
     } else {
-      setIsRecording(true);
-      const video = await cameraRef.current?.recordAsync();
-      video?.uri && recordVideo(video.uri);
+      try {
+        setIsRecording(false);
+        cameraRef.current?.stopRecording();
+      } catch (error) {
+        console.error("Error stopping recording:", error);
+      }
     }
   };
 

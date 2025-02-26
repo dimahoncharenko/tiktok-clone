@@ -1,6 +1,8 @@
+import { View } from "react-native";
+
+import { VideoFeedOverlay } from "@/components/video-feed-overlay";
 import { VideoPlayer } from "@/components/video-player";
 import { Video } from "@/shared/types/video";
-import { View } from "react-native";
 
 type Props = {
   item: Video;
@@ -13,14 +15,17 @@ export const FeedVideo = ({ item, show }: Props) => {
   }
 
   return (
-    <VideoPlayer
-      playerConfig={(player) => {
-        player.loop = true;
-        player.play();
-      }}
-      viewable={show}
-      kind="feed"
-      uri={item.signedUrl}
-    />
+    <View>
+      <VideoPlayer
+        playerConfig={(player) => {
+          player.loop = true;
+          player.play();
+        }}
+        viewable={show}
+        kind="feed"
+        uri={item.signedUrl}
+      />
+      <VideoFeedOverlay video={item} />
+    </View>
   );
 };

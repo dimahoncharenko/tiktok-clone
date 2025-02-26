@@ -52,7 +52,7 @@ export const VideoPlayer = ({ uri, kind, playerConfig, viewable }: Props) => {
         className="flex-1 bg-black mb-10"
         style={{
           width,
-          height: height,
+          height,
           zIndex: 100,
         }}
         player={videoPlayer}
