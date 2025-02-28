@@ -74,6 +74,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       password,
     });
 
+    console.log("sssssss", response.data.user.identities);
+
     const user = await getUser(response.data.user.id);
     setUser(user);
 

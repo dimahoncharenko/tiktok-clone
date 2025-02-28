@@ -1,6 +1,6 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { Camera, CameraType, CameraView } from "expo-camera";
-import { useEffect, useRef, useState } from "react";
+import { CameraType, CameraView } from "expo-camera";
+import { useRef, useState } from "react";
 import { TouchableOpacity, View } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 
@@ -12,7 +12,7 @@ type Props = {
   uri: string;
 };
 
-export const CameraControls = ({ recordVideo, uri }: Props) => {
+export const CameraControls = ({ recordVideo }: Props) => {
   const cameraRef = useRef<CameraView>(null);
   const [facing, setFacing] = useState<CameraType>("back");
   const [isRecording, setIsRecording] = useState(false);

@@ -41,7 +41,7 @@ export default function RootLayout() {
         />
         <Stack.Screen name="user/[id]" options={{ headerShown: false }} />
         <Stack.Screen
-          name="comments"
+          name="comments/[id]"
           options={{ headerShown: false, presentation: "modal" }}
         />
         <Stack.Screen

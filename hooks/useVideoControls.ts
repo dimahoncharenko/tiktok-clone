@@ -13,7 +13,7 @@ export const useVideoConrols = ({ video }: Props) => {
   const { user } = useAuthContext();
 
   const handleEnterComments = () => {
-    router.push("/comments");
+    router.push({ pathname: "/comments/[id]", params: { id: video.id } });
   };
 
   const handleEnterUserScreen = () => {
