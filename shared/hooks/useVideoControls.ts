@@ -1,10 +1,10 @@
 import { useRouter } from "expo-router";
 import { Share } from "react-native";
+import { useContext } from "react";
 
 import { useAuthContext } from "@/shared/context/AuthProvider";
 import { Video } from "@/shared/types/video";
 import { likeService } from "../lib/likes";
-import { useContext } from "react";
 import { appStateContext } from "../context/app-state";
 
 type Props = {
@@ -18,6 +18,8 @@ export const useVideoControls = ({ video, likeId }: Props) => {
   const { setLikes } = useContext(appStateContext);
 
   const handleEnterComments = () => {
+    if (!user) return router.replace("/(auth)");
+
     router.push({ pathname: "/comments/[id]", params: { id: video.id } });
   };
 

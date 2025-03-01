@@ -27,6 +27,10 @@ export const Header = ({
     router.back();
   };
 
+  const handleEnterSearchScreen = () => {
+    router.push("/search");
+  };
+
   return (
     <View
       className={cn(
@@ -53,7 +57,7 @@ export const Header = ({
       </View>
       <View className="size-8">
         {enableSearch && (
-          <TouchableOpacity>
+          <TouchableOpacity onPress={handleEnterSearchScreen}>
             <Ionicons name="search" size={30} color={color} />
           </TouchableOpacity>
         )}
