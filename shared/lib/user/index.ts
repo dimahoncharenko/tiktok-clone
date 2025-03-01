@@ -28,6 +28,17 @@ class UserService extends InitService {
 
     if (error) throw error;
   }
+
+  async getUsersByName(name: string) {
+    const { data, error } = await this.client
+      .from("User")
+      .select("*")
+      .like("username", `%${name}%`);
+
+    if (error) throw error;
+
+    return data;
+  }
 }
 
 export const userService = new UserService();
