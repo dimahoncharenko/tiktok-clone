@@ -38,10 +38,13 @@ export const useVideoControls = ({ video, likeId }: Props) => {
   const handleLikeUnlike = async () => {
     try {
       if (!likeId) {
-        await likeService.likeVideo(video.id, `${user?.id}`);
+        const res = await likeService.likeVideo(video.id, `${user?.id}`);
+        setLikes((prev) => prev.concat(res));
       }
       {
-        await likeService.removeLikeVideo(`${likeId}`);
+        await likeService.removeLikeVideo(video.id, `${user?.id}`);
+        await likeService.getLikesByUser(`${user?.id}`);
+
         setLikes((prev) => prev.filter((like) => like.id !== likeId));
       }
     } catch (err) {
