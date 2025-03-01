@@ -1,9 +1,12 @@
 import { Text, TouchableOpacity, View } from "react-native";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
+import { useContext } from "react";
 
 import { useAuthContext } from "@/shared/context/AuthProvider";
-import { useVideoConrols } from "@/hooks/useVideoControls";
+import { useVideoControls } from "@/shared/hooks/useVideoControls";
 import { Video } from "@/shared/types/video";
+import { appStateContext } from "@/shared/context/app-state";
+import { isItLiked } from "../lib/utils";
 
 type Props = {
   video: Video;
@@ -11,8 +14,16 @@ type Props = {
 
 export const VideoFeedOverlay = ({ video }: Props) => {
   const { user } = useAuthContext();
-  const { handleShare, handleEnterUserScreen, handleEnterComments } =
-    useVideoConrols({ video });
+  const { likes } = useContext(appStateContext);
+
+  const likeId = isItLiked(likes, video.id, `${user?.id}`);
+
+  const {
+    handleShare,
+    handleEnterUserScreen,
+    handleEnterComments,
+    handleLikeUnlike,
+  } = useVideoControls({ video, likeId: likeId?.id });
 
   return (
     <View
@@ -30,8 +41,12 @@ export const VideoFeedOverlay = ({ video }: Props) => {
           <TouchableOpacity onPress={handleEnterUserScreen}>
             <Ionicons name="person" size={35} color="white" />
           </TouchableOpacity>
-          <TouchableOpacity>
-            <Ionicons name="heart" size={35} color="white" />
+          <TouchableOpacity onPress={handleLikeUnlike}>
+            {likeId ? (
+              <Ionicons name="heart" size={35} color="white" />
+            ) : (
+              <Ionicons name="heart-outline" size={35} color="white" />
+            )}
           </TouchableOpacity>
           <TouchableOpacity onPress={handleEnterComments}>
             <Ionicons name="chatbubble-ellipses" size={35} color="white" />

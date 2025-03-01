@@ -1,30 +1,15 @@
-import { useRouter } from "expo-router";
 import { Text, TextInput, View, TouchableOpacity } from "react-native";
 import { Controller, useForm, FieldValues } from "react-hook-form";
-import * as yup from "yup";
+import { useRouter } from "expo-router";
 
-import { ErrorMessage } from "../../shared/blocks";
-import { handleSignUpError } from "@/lib/signup/utils";
-import { useYupValidationResolver } from "@/hooks/useYupValidationSchema";
+import {
+  FormValues,
+  handleSignUpError,
+  validationSchema,
+} from "@/lib/signup/utils";
+import { useYupValidationResolver } from "@/shared/hooks/useYupValidationSchema";
 import { useAuthContext } from "@/shared/context/AuthProvider";
-
-type FormValues = {
-  email: string;
-  password: string;
-  username: string;
-};
-
-const validationSchema = yup.object({
-  email: yup
-    .string()
-    .required("Email is required!")
-    .email("Email is incorrect!"),
-  password: yup
-    .string()
-    .min(6, "Password should be at least 6 symbols!")
-    .required("Password is required!"),
-  username: yup.string().required("Username is required!"),
-});
+import { ErrorMessage } from "../../shared/ui-blocks";
 
 export default function AuthScreen() {
   const { signUp } = useAuthContext();

@@ -6,8 +6,6 @@ import { KEYS } from "../constants/env-keys";
 const supabaseUrl = KEYS.SUPABASE_KEY;
 const supabaseAnonKey = KEYS.SUPABASE_ANON_KEY;
 
-console.log("DIRECT DB URL: ", KEYS.DIRECT_DB_URL);
-
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
     storage: AsyncStorage,

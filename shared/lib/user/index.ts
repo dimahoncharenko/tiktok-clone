@@ -1,0 +1,33 @@
+import { InitService } from "../utils";
+
+type UserRecordParams = {
+  email: string;
+  id: string;
+  username: string;
+};
+
+class UserService extends InitService {
+  async getUser(id: string) {
+    const { data, error } = await this.client
+      .from("User")
+      .select("*")
+      .eq("id", id)
+      .maybeSingle();
+
+    if (error) throw error;
+
+    return data;
+  }
+
+  async addUser({ email, id, username }: UserRecordParams) {
+    const { error } = await this.client.from("User").insert({
+      email,
+      id,
+      username,
+    });
+
+    if (error) throw error;
+  }
+}
+
+export const userService = new UserService();

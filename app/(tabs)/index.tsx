@@ -5,11 +5,12 @@ import { usePathname } from "expo-router";
 import { FeedVideo } from "@/components/feed-video";
 import { parseVideoUrlsFromStorage } from "@/lib/feed/utils";
 import { Header } from "@/components/header";
+import { Video } from "@/shared/types/video";
 
 export default function HomeScreen() {
   const pathname = usePathname();
 
-  const [videos, setVideos] = useState<any[]>([]);
+  const [videos, setVideos] = useState<Video[]>([]);
   const [stoppedVideo, setStoppedVideo] = useState(false);
   const [viewableIndex, setViewableIndex] = useState(-1);
 

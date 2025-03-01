@@ -8,7 +8,9 @@ import {
 import { AuthResponse, AuthTokenResponsePassword } from "@supabase/supabase-js";
 import { useRouter } from "expo-router";
 
-import { authService, storageService } from "../lib/utils";
+import { authService } from "../lib/auth";
+import { userService } from "../lib/user";
+import { appStateContext } from "./app-state";
 
 type User = {
   created_at: string;
@@ -52,13 +54,17 @@ export const useAuthContext = () => useContext(AuthProviderContext);
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
+  const { getLikesByUser, resetAppState } = useContext(appStateContext);
 
   useEffect(() => {
     const { unsubscribe } = authService.subscribeToAuthChange(
       async (_, session) => {
         if (!session) return router.push("/(auth)");
+
         const user = await getUser(session.user.id);
         setUser(user);
+
+        await getLikesByUser(user);
         router.push("/(tabs)");
       }
     );
@@ -77,12 +83,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const user = await getUser(response.data.user.id);
     setUser(user);
 
+    await getLikesByUser(user);
+
     return response;
   };
 
   const getUser = async (id: string) => {
     try {
-      const data = await storageService.getUser(id);
+      const data = await userService.getUser(id);
 
       return data;
     } catch (err) {
@@ -92,13 +100,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const addUser = async ({ email, id, username }: GetUserParams) => {
     try {
-      await storageService.addUser({ email, id, username });
-
-      console.log("addUser successful");
+      await userService.addUser({ email, id, username });
 
       const user = await getUser(id);
-
-      console.log("got user: ", user);
 
       setUser(user);
     } catch (err) {
@@ -112,16 +116,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       password,
     });
 
-    console.log("signUp successful: ", response.data.user?.id);
-
     await addUser({ email, id: `${response.data.user?.id}`, username });
-
     return response;
   };
 
   const signOut = async () => {
     await authService.signOut();
 
+    resetAppState();
     setUser(null);
     router.push("/(auth)");
   };
