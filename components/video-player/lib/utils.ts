@@ -1,4 +1,4 @@
-import { storageService } from "@/shared/lib/utils";
+import { videoService } from "@/shared/lib/videos";
 
 export const makeFormDataForVideo = (
   name: string,
@@ -23,12 +23,12 @@ export const saveUserVideo = async (user_id: string, uri: string) => {
     uri
   );
 
-  const queryResult = await storageService.addVideoToStorageAndQuery({
+  const queryResult = await videoService.addVideoToStorageAndQuery({
     body: formData,
     name: `${fileName}`,
   });
 
-  storageService.addToVideoTable({
+  videoService.addToVideoTable({
     uri: `${queryResult?.path}`,
     user_id,
     title: "Test title added.",

@@ -5,7 +5,7 @@ import { TouchableOpacity, View } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 
 import { PermissionDisplayError } from "@/components/permission-display-error";
-import { useAllPermissions } from "@/hooks/useAllPermissions";
+import { useAllPermissions } from "@/shared/hooks/useAllPermissions";
 
 type Props = {
   recordVideo: (value: React.SetStateAction<string>) => void;

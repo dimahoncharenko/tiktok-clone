@@ -1,4 +1,4 @@
-import { useAllPermissions } from "@/hooks/useAllPermissions";
+import { useAllPermissions } from "@/shared/hooks/useAllPermissions";
 import { useEvent } from "expo";
 import { Camera } from "expo-camera";
 import { VideoPlayer, useVideoPlayer } from "expo-video";

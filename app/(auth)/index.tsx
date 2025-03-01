@@ -2,7 +2,7 @@ import { useRouter } from "expo-router";
 import { Text, TextInput, View, TouchableOpacity } from "react-native";
 import { Controller, useForm } from "react-hook-form";
 
-import { ErrorMessage } from "../../shared/blocks";
+import { ErrorMessage } from "../../shared/ui-blocks";
 import { handleLoginError } from "@/lib/login/utils";
 import { useAuthContext } from "@/shared/context/AuthProvider";
 

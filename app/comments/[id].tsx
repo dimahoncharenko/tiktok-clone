@@ -13,9 +13,10 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { Header } from "@/components/header";
 import { useAuthContext } from "@/shared/context/AuthProvider";
-import { Comment, commentsService } from "@/shared/lib/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { formatDate } from "@/shared/lib/date/utils";
+import { commentsService } from "@/shared/lib/comments";
+import { Comment } from "@/shared/types/comment";
 
 type FormValues = {
   message: string;
