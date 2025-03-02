@@ -14,7 +14,7 @@ type Props = {
 
 export const VideoFeedOverlay = ({ video }: Props) => {
   const { user } = useAuthContext();
-  const { likes } = useContext(appStateContext);
+  const { likes, following } = useContext(appStateContext);
 
   const likeId = isItLiked(likes, video.id, `${user?.id}`);
 
@@ -23,6 +23,8 @@ export const VideoFeedOverlay = ({ video }: Props) => {
     handleEnterUserScreen,
     handleEnterComments,
     handleLikeUnlike,
+    followUser,
+    unfollowUser,
   } = useVideoControls({ video, likeId: likeId?.id });
 
   return (
@@ -38,9 +40,32 @@ export const VideoFeedOverlay = ({ video }: Props) => {
           <Text className="text-white text-lg font-medium">{video.title}</Text>
         </View>
         <View className="gap-4">
-          <TouchableOpacity onPress={handleEnterUserScreen}>
-            <Ionicons name="person" size={35} color="white" />
-          </TouchableOpacity>
+          <View className="relative">
+            <TouchableOpacity onPress={handleEnterUserScreen}>
+              <Ionicons name="person" size={35} color="white" />
+            </TouchableOpacity>
+            {following.find(
+              (user) => user.follower_user_id === video.User.id
+            ) ? (
+              <TouchableOpacity>
+                <TouchableOpacity
+                  className="absolute -bottom-2 right-0 bg-white rounded-full"
+                  onPress={unfollowUser}
+                >
+                  <Ionicons name="remove-circle" size={20} color="red" />
+                </TouchableOpacity>
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity>
+                <TouchableOpacity
+                  className="absolute -bottom-2 right-0 bg-white rounded-full"
+                  onPress={followUser}
+                >
+                  <Ionicons name="add-circle" size={20} color="black" />
+                </TouchableOpacity>
+              </TouchableOpacity>
+            )}
+          </View>
           <TouchableOpacity onPress={handleLikeUnlike}>
             {likeId ? (
               <Ionicons name="heart" size={35} color="white" />

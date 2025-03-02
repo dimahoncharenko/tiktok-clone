@@ -6,6 +6,7 @@ import { useAuthContext } from "@/shared/context/AuthProvider";
 import { Video } from "@/shared/types/video";
 import { likeService } from "../lib/likes";
 import { appStateContext } from "../context/app-state";
+import { userService } from "../lib/user";
 
 type Props = {
   video: Video;
@@ -15,7 +16,7 @@ type Props = {
 export const useVideoControls = ({ video, likeId }: Props) => {
   const router = useRouter();
   const { user } = useAuthContext();
-  const { setLikes } = useContext(appStateContext);
+  const { setLikes, getFollowers, getFollowings } = useContext(appStateContext);
 
   const handleEnterComments = () => {
     if (!user) return router.replace("/(auth)");
@@ -54,10 +55,30 @@ export const useVideoControls = ({ video, likeId }: Props) => {
     }
   };
 
+  const followUser = async () => {
+    try {
+      await userService.followUser(`${user?.id}`, video.User.id);
+      user && getFollowings(user);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const unfollowUser = async () => {
+    try {
+      await userService.unfollowUser(`${user?.id}`, video.User.id);
+      user && getFollowings(user);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return {
     handleShare,
     handleEnterUserScreen,
     handleEnterComments,
     handleLikeUnlike,
+    followUser,
+    unfollowUser,
   };
 };
