@@ -13,11 +13,13 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import { Header } from "@/components/header";
 import { userService } from "@/shared/lib/user";
 import { User } from "@/shared/types/user";
+import { useRouter } from "expo-router";
 
 export default function () {
   const [text, setText] = useState("");
   const [debouncedSearch] = useDebounceValue(text, 300);
   const [users, setUsers] = useState<User[]>([]);
+  const router = useRouter();
 
   const search = async (value: string) => {
     if (value.length < 2) return;
@@ -33,6 +35,10 @@ export default function () {
   useEffect(() => {
     search(debouncedSearch);
   }, [debouncedSearch]);
+
+  const handleEnterUserScreen = (id: string) => {
+    router.push({ pathname: "/user/[id]", params: { id } });
+  };
 
   return (
     <SafeAreaView>
@@ -53,12 +59,15 @@ export default function () {
             getItem={(users, index) => users[index]}
             className="h-full"
             renderItem={({ item }) => (
-              <View className="bg-white border border-gray-300 rounded-md flex-row items-center pr-4 justify-between">
+              <TouchableOpacity
+                className="bg-white border border-gray-300 rounded-md flex-row items-center pr-4 justify-between"
+                onPress={() => handleEnterUserScreen(item.id)}
+              >
                 <Text className="p-3 text-lg font-medium">{item.username}</Text>
                 <TouchableOpacity>
                   <AntDesign name="adduser" size={24} color="black" />
                 </TouchableOpacity>
-              </View>
+              </TouchableOpacity>
             )}
           />
         </View>

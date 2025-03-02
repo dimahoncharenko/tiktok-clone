@@ -1,15 +1,23 @@
+import { useRouter } from "expo-router";
+import { useContext } from "react";
+
+import { UserDetails } from "@/components/user-details";
 import { useAuthContext } from "@/shared/context/AuthProvider";
-import { Text, TouchableOpacity, View } from "react-native";
+import { appStateContext } from "@/shared/context/app-state";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Header } from "@/components/header";
 
 export default function ProfileScreen() {
-  const { signOut } = useAuthContext();
+  const { user } = useAuthContext();
+  const { following, followers } = useContext(appStateContext);
+  const router = useRouter();
+
+  if (!user) return router.replace("/(auth)");
 
   return (
-    <View className="bg-white flex-1 justify-center items-center ">
-      <Text className="text-black">Profile</Text>
-      <TouchableOpacity className="bg-black rounded-lg" onPress={signOut}>
-        <Text className="p-4 text-center text-white text-2xl">Logout</Text>
-      </TouchableOpacity>
-    </View>
+    <SafeAreaView className="flex-1 bg-white">
+      <Header title="Profile" color="black" />
+      <UserDetails followers={followers.length} following={following.length} />
+    </SafeAreaView>
   );
 }
