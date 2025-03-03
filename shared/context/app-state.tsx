@@ -11,7 +11,7 @@ import { likeService } from "../lib/likes";
 import { Like } from "../types/like";
 import { Follower } from "../types/follower";
 import { SameAs } from "../types";
-import { userService } from "../lib/user";
+import { useFollowingsFollowers } from "../hooks/useFollowingsFollowers";
 
 type Following = SameAs<Follower>;
 
@@ -36,8 +36,14 @@ type Props = {
 
 export const AppState = ({ children }: Props) => {
   const [likes, setLikes] = useState<Like[]>([]);
-  const [following, setFollowings] = useState<Following[]>([]);
-  const [followers, setFollowers] = useState<Follower[]>([]);
+  const {
+    setFollowers,
+    setFollowings,
+    followers,
+    following,
+    getFollowers,
+    getFollowings,
+  } = useFollowingsFollowers();
 
   const getLikesByUser = async (user: User) => {
     try {
@@ -45,26 +51,6 @@ export const AppState = ({ children }: Props) => {
       setLikes(() => response);
     } catch (err) {
       setLikes([]);
-      console.error(err);
-    }
-  };
-
-  const getFollowings = async (user: User) => {
-    try {
-      const res = await userService.getFollowings(user.id);
-      setFollowings(() => res);
-    } catch (err) {
-      setFollowings([]);
-      console.error(err);
-    }
-  };
-
-  const getFollowers = async (user: User) => {
-    try {
-      const res = await userService.getFollowers(user.id);
-      setFollowers(() => res);
-    } catch (err) {
-      setFollowers([]);
       console.error(err);
     }
   };

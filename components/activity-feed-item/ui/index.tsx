@@ -19,7 +19,7 @@ export const ActivityFeedItem = ({
   const router = useRouter();
 
   const handleEnterFollowersScreen = () => {
-    router.push("/followers");
+    router.push("/(inbox)/followers");
   };
 
   return (
