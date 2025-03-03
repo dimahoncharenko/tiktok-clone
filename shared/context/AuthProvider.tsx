@@ -54,7 +54,7 @@ export const useAuthContext = () => useContext(AuthProviderContext);
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
-  const { getLikesByUser, resetAppState, getFollowings } =
+  const { getLikesByUser, resetAppState, getFollowings, getFollowers } =
     useContext(appStateContext);
 
   useEffect(() => {
@@ -67,6 +67,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
         await getLikesByUser(user);
         await getFollowings(user);
+        await getFollowers(user);
         router.push("/(tabs)");
       }
     );

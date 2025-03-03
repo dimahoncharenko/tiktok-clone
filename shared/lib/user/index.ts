@@ -62,7 +62,7 @@ class UserService extends InitService {
   async getFollowers(user_id: string) {
     const { data, error } = await this.client
       .from("Follower")
-      .select("*")
+      .select("*, User(*)")
       .eq("follower_user_id", user_id);
 
     if (error) throw error;
