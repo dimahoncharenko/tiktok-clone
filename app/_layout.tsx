@@ -41,6 +41,10 @@ export default function RootLayout() {
               statusBarBackgroundColor: "transparent",
             }}
           />
+          <Stack.Screen
+            name="(inbox)/followers"
+            options={{ headerShown: false }}
+          />
           <Stack.Screen name="user/[id]" options={{ headerShown: false }} />
           <Stack.Screen
             name="comments/[id]"
