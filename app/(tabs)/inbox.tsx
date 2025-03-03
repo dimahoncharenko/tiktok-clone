@@ -1,5 +1,9 @@
-import { appStateContext } from "@/shared/context/app-state";
 import { useContext } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
+
+import { Header } from "@/components/header";
+import { appStateContext } from "@/shared/context/app-state";
+import { ActivityFeedItem } from "@/components/activity-feed-item";
 import { Text, View } from "react-native";
 
 export default function InboxScreen() {
@@ -8,8 +12,11 @@ export default function InboxScreen() {
   console.log(followers);
 
   return (
-    <View className="bg-white flex-1 justify-center items-center">
-      <Text className="text-black">Inbox</Text>
-    </View>
+    <SafeAreaView className="bg-white flex-1 items-center">
+      <Header title="Inbox" color="black" classNames={{ root: "w-full" }} />
+      <View className="px-5 w-full">
+        <ActivityFeedItem heading="New followers" content="Say hi" />
+      </View>
+    </SafeAreaView>
   );
 }
