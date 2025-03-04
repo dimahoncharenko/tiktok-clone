@@ -40,21 +40,21 @@ class UserService extends InitService {
     return data;
   }
 
-  async followUser(user_id: string, follower_user_id: string) {
+  async followUser(followed_user_id: string, follower_user_id: string) {
     const { error } = await this.client.from("Follower").insert({
-      user_id,
       follower_user_id,
+      followed_user_id,
     });
 
     if (error) throw error;
   }
 
-  async unfollowUser(user_id: string, follower_user_id: string) {
+  async unfollowUser(followed_user_id: string, follower_user_id: string) {
     const { error } = await this.client
       .from("Follower")
       .delete()
-      .eq("user_id", user_id)
-      .eq("follower_user_id", follower_user_id);
+      .eq("follower_user_id", follower_user_id)
+      .eq("followed_user_id", followed_user_id);
 
     if (error) throw error;
   }
@@ -63,7 +63,7 @@ class UserService extends InitService {
     const { data, error } = await this.client
       .from("Follower")
       .select("*, User(*)")
-      .eq("follower_user_id", user_id);
+      .eq("followed_user_id", user_id);
 
     if (error) throw error;
 
@@ -74,7 +74,7 @@ class UserService extends InitService {
     const { data, error } = await this.client
       .from("Follower")
       .select("*")
-      .eq("user_id", user_id);
+      .eq("follower_user_id", user_id);
 
     if (error) throw error;
 

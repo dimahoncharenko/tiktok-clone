@@ -1,16 +1,31 @@
 import { useRouter } from "expo-router";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 
 import { UserDetails } from "@/components/user-details";
-import { useAuthContext } from "@/shared/context/AuthProvider";
-import { appStateContext } from "@/shared/context/app-state";
+import { useAuthContext } from "@/shared/context/auth-provider";
+import { DISTRIBUTION_CONTEXT } from "@/shared/context/distribution-context";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Header } from "@/components/header";
 
 export default function ProfileScreen() {
   const { user } = useAuthContext();
-  const { following, followers } = useContext(appStateContext);
+  const { following, followers } = useContext(
+    DISTRIBUTION_CONTEXT.appStateContext
+  );
+
+  const { getFollowers, getFollowings } = useContext(
+    DISTRIBUTION_CONTEXT.appActionsContext
+  );
+
   const router = useRouter();
+
+  useEffect(() => {
+    if (!user) return;
+    (async () => {
+      await getFollowers(user.id);
+      await getFollowings(user.id);
+    })();
+  }, [user]);
 
   if (!user) return router.replace("/(auth)");
 

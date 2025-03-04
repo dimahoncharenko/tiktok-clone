@@ -25,8 +25,19 @@ class Like extends InitService {
   async getLikesByUser(user_id: string) {
     const { data, error } = await this.client
       .from("Like")
-      .select("id, video_id, user_id")
+      .select("*")
       .eq("user_id", user_id);
+
+    if (error) throw error;
+
+    return data;
+  }
+
+  async getLikesByVideo(user_id: string) {
+    const { data, error } = await this.client
+      .from("Like")
+      .select("*")
+      .eq("video_user_id", user_id);
 
     if (error) throw error;
 

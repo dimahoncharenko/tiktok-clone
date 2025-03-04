@@ -1,20 +1,15 @@
-import {
-  Image,
-  Text,
-  TouchableOpacity,
-  View,
-  VirtualizedList,
-} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Image, View, VirtualizedList } from "react-native";
 import { useRouter } from "expo-router";
 import { useContext } from "react";
 
-import { Header } from "@/components/header";
-import { appStateContext } from "@/shared/context/app-state";
+import { DISTRIBUTION_CONTEXT } from "@/shared/context/distribution-context";
 import { Follower } from "@/shared/types/follower";
+import { MenuItem } from "@/components/menu-item";
+import { Header } from "@/components/header";
 
 export default function () {
-  const { followers } = useContext(appStateContext);
+  const { followers } = useContext(DISTRIBUTION_CONTEXT.appStateContext);
   const router = useRouter();
 
   return (
@@ -27,28 +22,28 @@ export default function () {
         getItem={(followers, index) => followers[index]}
         className="h-full px-5 gap-2"
         renderItem={({ item }) => (
-          <TouchableOpacity
-            className="flex-row gap-3"
-            onPress={() =>
+          <MenuItem
+            passive={false}
+            func={() =>
               router.push({
                 pathname: "/user/[id]",
-                params: { id: item.user_id },
+                params: { id: item.follower_user_id },
               })
             }
-          >
-            <View>
-              <Image
-                source={{ uri: "https://placehold.co/40x40" }}
-                className="size-10 bg-black rounded-full"
-              />
-            </View>
-            <View>
-              <Text className="text-sm font-medium text-gray-900">
-                {item.User.username}
-              </Text>
-              <Text className="text-sm text-gray-500">Say hi</Text>
-            </View>
-          </TouchableOpacity>
+            heading={item.User.username}
+            content="Say hi"
+            classes={{
+              root: "py-1",
+            }}
+            icon={
+              <View>
+                <Image
+                  source={{ uri: "https://placehold.co/40x40" }}
+                  className="size-12 bg-black rounded-full"
+                />
+              </View>
+            }
+          />
         )}
       />
     </SafeAreaView>

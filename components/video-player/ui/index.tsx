@@ -2,7 +2,7 @@ import { VideoPlayer as TVideoPlayer, VideoView } from "expo-video";
 import { Dimensions, View } from "react-native";
 
 import { useVideo } from "../lib/useVideo";
-import { useAuthContext } from "@/shared/context/AuthProvider";
+import { useAuthContext } from "@/shared/context/auth-provider";
 import { saveUserVideo } from "../lib/utils";
 import { VideoControls } from "./controls";
 

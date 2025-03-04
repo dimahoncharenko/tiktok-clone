@@ -12,11 +12,11 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { Header } from "@/components/header";
-import { useAuthContext } from "@/shared/context/AuthProvider";
+import { useAuthContext } from "@/shared/context/auth-provider";
 import { Ionicons } from "@expo/vector-icons";
-import { formatDate } from "@/shared/lib/date/utils";
 import { commentsService } from "@/shared/lib/comments";
 import { Comment } from "@/shared/types/comment";
+import { CommentCard } from "@/components/comment-card";
 
 type FormValues = {
   message: string;
@@ -77,17 +77,7 @@ export default function () {
         getItemCount={() => comments.length}
         getItem={(data, index) => data[index] || null}
         renderItem={({ item }: { item: Comment }) => {
-          return (
-            <View className="flex-row even:my-2 items-center justify-between">
-              <View>
-                <Text className="font-semibold text-lg">{user?.username}:</Text>
-                <Text className="py-2">{item.content}</Text>
-              </View>
-              <Text className="ml-4 self-end mb-2 text-sm text-gray-500">
-                {formatDate(item.createdAt)}
-              </Text>
-            </View>
-          );
+          return <CommentCard comment={item} username={`${user?.username}`} />;
         }}
       />
       <View className="p-4">

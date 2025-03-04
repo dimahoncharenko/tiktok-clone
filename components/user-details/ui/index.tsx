@@ -1,6 +1,6 @@
 import { Image, Text, TouchableOpacity, View } from "react-native";
 
-import { useAuthContext } from "@/shared/context/AuthProvider";
+import { useAuthContext } from "@/shared/context/auth-provider";
 import { User } from "@/shared/types/user";
 
 type Props = {
