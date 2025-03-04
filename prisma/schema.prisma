@@ -34,7 +34,7 @@ model Video {
   user_id   String
   user      User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
   likes     Like[]
-  createdAt DateTime  @default(now())
+  created_at DateTime  @default(now())
   comments  Comment[]
 }
 
@@ -50,10 +50,10 @@ model Like {
 
 model Follower {
   id               String   @id @default(dbgenerated("uuid_generate_v4()"))
-  user_id          String
-  user             User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  follower_user_id          String
+  user             User     @relation(fields: [follower_user_id], references: [id], onDelete: Cascade)
   created_at       DateTime @default(now())
-  follower_user_id String
+  followed_user_id String
 }
 
 model Comment {
@@ -64,7 +64,7 @@ model Comment {
   video         Video    @relation(fields: [video_id], references: [id], onDelete: Cascade)
   video_user_id String
   content       String
-  createdAt     DateTime @default(now())
+  created_at     DateTime @default(now())
 }
 
 model Chat {
@@ -74,5 +74,5 @@ model Chat {
   chat_user_id String
   users_key    String
   content      String
-  createdAt    DateTime @default(now())
+  created_at    DateTime @default(now())
 }

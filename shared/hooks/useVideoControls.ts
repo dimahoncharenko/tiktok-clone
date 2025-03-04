@@ -2,11 +2,10 @@ import { useRouter } from "expo-router";
 import { Share } from "react-native";
 import { useContext } from "react";
 
-import { useAuthContext } from "@/shared/context/AuthProvider";
+import { useAuthContext } from "@/shared/context/auth-provider";
 import { Video } from "@/shared/types/video";
 import { likeService } from "../lib/likes";
-import { appStateContext } from "../context/app-state";
-import { userService } from "../lib/user";
+import { DISTRIBUTION_CONTEXT } from "../context/distribution-context";
 
 type Props = {
   video: Video;
@@ -16,12 +15,17 @@ type Props = {
 export const useVideoControls = ({ video, likeId }: Props) => {
   const router = useRouter();
   const { user } = useAuthContext();
-  const { setLikes, getFollowers, getFollowings } = useContext(appStateContext);
+  const { setLikes, followUser, unfollowUser } = useContext(
+    DISTRIBUTION_CONTEXT.appActionsContext
+  );
 
   const handleEnterComments = () => {
     if (!user) return router.replace("/(auth)");
 
-    router.push({ pathname: "/comments/[id]", params: { id: video.id } });
+    router.push({
+      pathname: "/comments/[id]",
+      params: { id: video.id },
+    });
   };
 
   const handleEnterUserScreen = () => {
@@ -43,8 +47,7 @@ export const useVideoControls = ({ video, likeId }: Props) => {
       if (!likeId) {
         const res = await likeService.likeVideo(video.id, `${user?.id}`);
         setLikes((prev) => prev.concat(res));
-      }
-      {
+      } else {
         await likeService.removeLikeVideo(video.id, `${user?.id}`);
         await likeService.getLikesByUser(`${user?.id}`);
 
@@ -55,19 +58,21 @@ export const useVideoControls = ({ video, likeId }: Props) => {
     }
   };
 
-  const followUser = async () => {
+  const handleFollowUser = async () => {
+    if (!user) return;
+
     try {
-      await userService.followUser(`${user?.id}`, video.User.id);
-      user && getFollowings(user);
+      await followUser(user, video.User.id);
     } catch (err) {
       console.error(err);
     }
   };
 
-  const unfollowUser = async () => {
+  const handleUnfollowUser = async () => {
+    if (!user) return;
+
     try {
-      await userService.unfollowUser(`${user?.id}`, video.User.id);
-      user && getFollowings(user);
+      await unfollowUser(user, video.User.id);
     } catch (err) {
       console.error(err);
     }
@@ -78,7 +83,7 @@ export const useVideoControls = ({ video, likeId }: Props) => {
     handleEnterUserScreen,
     handleEnterComments,
     handleLikeUnlike,
-    followUser,
-    unfollowUser,
+    handleFollowUser,
+    handleUnfollowUser,
   };
 };

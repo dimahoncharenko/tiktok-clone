@@ -4,7 +4,7 @@ import { Controller, useForm } from "react-hook-form";
 
 import { ErrorMessage } from "../../shared/ui-blocks";
 import { handleLoginError } from "@/lib/login/utils";
-import { useAuthContext } from "@/shared/context/AuthProvider";
+import { useAuthContext } from "@/shared/context/auth-provider";
 
 type FormValues = {
   email: string;

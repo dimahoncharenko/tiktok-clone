@@ -7,7 +7,19 @@ class CommentsService extends InitService {
       .from("Comment")
       .select("*")
       .eq("video_id", videoId)
-      .order("createdAt", { ascending: false });
+      .order("created_at", { ascending: false });
+
+    if (error) throw error;
+
+    return data as Comment[];
+  }
+
+  async getAllCommentsByUserId(userId: string) {
+    const { data, error } = await this.client
+      .from("Comment")
+      .select("*")
+      .eq("video_user_id", userId)
+      .order("created_at", { ascending: false });
 
     if (error) throw error;
 

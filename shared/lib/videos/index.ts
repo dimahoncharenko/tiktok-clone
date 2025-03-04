@@ -18,11 +18,23 @@ export class VideoService extends InitService {
     const { data, error } = await this.client
       .from("Video")
       .select("*, User(*)")
-      .order("createdAt", { ascending: false });
+      .order("created_at", { ascending: false });
 
     if (error) throw error;
 
     return data as Video[];
+  }
+
+  async getVideoById(videoId: string) {
+    const { data, error } = await this.client
+      .from("Video")
+      .select("*, User(username)")
+      .eq("id", videoId)
+      .maybeSingle();
+
+    if (error) throw error;
+
+    return data as Video;
   }
 
   async addToVideoTable(params: VideoRecordParams) {

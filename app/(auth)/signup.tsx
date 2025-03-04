@@ -8,7 +8,7 @@ import {
   validationSchema,
 } from "@/lib/signup/utils";
 import { useYupValidationResolver } from "@/shared/hooks/useYupValidationSchema";
-import { useAuthContext } from "@/shared/context/AuthProvider";
+import { useAuthContext } from "@/shared/context/auth-provider";
 import { ErrorMessage } from "../../shared/ui-blocks";
 
 export default function AuthScreen() {

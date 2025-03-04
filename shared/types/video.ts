@@ -2,7 +2,7 @@ import { User } from "./user";
 
 export type Video = {
   User: User;
-  createdAt: string;
+  created_at: string;
   id: string;
   signedUrl: string | null;
   title: string;
