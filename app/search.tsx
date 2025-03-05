@@ -9,11 +9,11 @@ import { useDebounceValue } from "usehooks-ts";
 import { useEffect, useState } from "react";
 import { View } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import { useRouter } from "expo-router";
 
 import { Header } from "@/components/header";
 import { userService } from "@/shared/lib/user";
 import { User } from "@/shared/types/user";
-import { useRouter } from "expo-router";
 
 export default function () {
   const [text, setText] = useState("");
