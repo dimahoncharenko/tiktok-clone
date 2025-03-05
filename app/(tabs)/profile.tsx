@@ -1,4 +1,3 @@
-import { useRouter } from "expo-router";
 import { useContext, useEffect } from "react";
 
 import { UserDetails } from "@/components/user-details";
@@ -17,8 +16,6 @@ export default function ProfileScreen() {
     DISTRIBUTION_CONTEXT.appActionsContext
   );
 
-  const router = useRouter();
-
   useEffect(() => {
     if (!user) return;
     (async () => {
@@ -27,7 +24,7 @@ export default function ProfileScreen() {
     })();
   }, [user]);
 
-  if (!user) return router.replace("/(auth)");
+  if (!user) return null;
 
   return (
     <SafeAreaView className="flex-1 bg-white">

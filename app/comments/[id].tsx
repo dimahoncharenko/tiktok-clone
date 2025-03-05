@@ -1,22 +1,15 @@
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
-import {
-  Keyboard,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-  VirtualizedList,
-} from "react-native";
+import { useForm } from "react-hook-form";
+import { Keyboard, VirtualizedList } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { Header } from "@/components/header";
 import { useAuthContext } from "@/shared/context/auth-provider";
-import { Ionicons } from "@expo/vector-icons";
 import { commentsService } from "@/shared/lib/comments";
 import { Comment } from "@/shared/types/comment";
 import { CommentCard } from "@/components/comment-card";
+import { AddComment } from "@/components/add-comment";
 
 type FormValues = {
   message: string;
@@ -53,7 +46,10 @@ export default function () {
       throw new Error("Please add some content to the comment");
     if (!user) throw new Error("User is not logged in!");
 
+    console.log("Is about to add comment");
+
     await commentsService.postComment(user.id, params.id, message);
+
     await getComments();
   };
 
@@ -80,29 +76,7 @@ export default function () {
           return <CommentCard comment={item} username={`${user?.username}`} />;
         }}
       />
-      <View className="p-4">
-        <Controller
-          control={control}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <View className="flex-row items-center justify-between gap-3">
-              <TextInput
-                className="border border-gray-300 rounded-xl h-12 w-[87%]"
-                placeholder="Put a comment here"
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-              />
-              <TouchableOpacity
-                className="p-2 rounded-full bg-red-500"
-                onPress={handleSubmit(submit)}
-              >
-                <Ionicons name="arrow-forward" color="white" size={24} />
-              </TouchableOpacity>
-            </View>
-          )}
-          name="message"
-        />
-      </View>
+      <AddComment control={control} handleSubmit={handleSubmit(submit)} />
     </SafeAreaView>
   );
 }
