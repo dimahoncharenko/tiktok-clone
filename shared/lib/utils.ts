@@ -14,3 +14,9 @@ export abstract class InitService {
     this.client = supabase;
   }
 }
+export const isArrayNotEmpty = <T>(
+  array: T[] | undefined | null
+): array is T[] => {
+  return array != null && array.length > 0;
+};
+

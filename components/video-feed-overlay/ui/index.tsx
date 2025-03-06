@@ -4,9 +4,9 @@ import { useContext, useEffect } from "react";
 
 import { useAuthContext } from "@/shared/context/auth-provider";
 import { useVideoControls } from "@/shared/hooks/useVideoControls";
-import { Video } from "@/shared/types/video";
 import { DISTRIBUTION_CONTEXT } from "@/shared/context/distribution-context";
-import { isItLiked } from "../lib/utils";
+import { isItFollowed, isItLiked } from "../lib/utils";
+import { Video } from "@/shared/types/video";
 
 type Props = {
   video: Video;
@@ -14,9 +14,7 @@ type Props = {
 
 export const VideoFeedOverlay = ({ video }: Props) => {
   const { user } = useAuthContext();
-  const { likes, following, followers } = useContext(
-    DISTRIBUTION_CONTEXT.appStateContext
-  );
+  const { likes, following } = useContext(DISTRIBUTION_CONTEXT.appStateContext);
 
   const { getFollowers, getFollowings } = useContext(
     DISTRIBUTION_CONTEXT.appActionsContext
@@ -43,7 +41,7 @@ export const VideoFeedOverlay = ({ video }: Props) => {
 
   return (
     <View
-      className="absolute px-3 py-6 left-0 right-0 bottom-0"
+      className="absolute px-3 py-6 left-0 right-0 bottom-2"
       style={{ zIndex: 200 }}
     >
       <View className="flex-row justify-between">
@@ -58,9 +56,7 @@ export const VideoFeedOverlay = ({ video }: Props) => {
             <TouchableOpacity onPress={handleEnterUserScreen}>
               <Ionicons name="person" size={35} color="white" />
             </TouchableOpacity>
-            {following.find(
-              (follower) => follower.follower_user_id === user?.id
-            ) ? (
+            {isItFollowed(following, `${user?.id}`, video.User.id) ? (
               <TouchableOpacity>
                 <TouchableOpacity
                   className="absolute -bottom-2 right-0 bg-white rounded-full"

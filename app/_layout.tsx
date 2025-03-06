@@ -59,6 +59,10 @@ export default function RootLayout() {
               options={{ headerShown: false, presentation: "modal" }}
             />
             <Stack.Screen
+              name="(chat)/[id]"
+              options={{ headerShown: false, presentation: "modal" }}
+            />
+            <Stack.Screen
               name="search"
               options={{ headerShown: false, presentation: "modal" }}
             />

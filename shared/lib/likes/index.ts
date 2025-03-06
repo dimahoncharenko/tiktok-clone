@@ -1,6 +1,7 @@
+import { Like } from "@/shared/types/like";
 import { InitService } from "../utils";
 
-class Like extends InitService {
+class LikeService extends InitService {
   async likeVideo(video_id: string, user_id: string) {
     const { data, error } = await this.client
       .from("Like")
@@ -9,7 +10,7 @@ class Like extends InitService {
       .limit(1);
 
     if (error) throw error;
-    return data;
+    return data as [Like];
   }
 
   async removeLikeVideo(video_id: string, user_id: string) {
@@ -30,7 +31,7 @@ class Like extends InitService {
 
     if (error) throw error;
 
-    return data;
+    return data as Like[];
   }
 
   async getLikesByVideo(user_id: string) {
@@ -41,8 +42,8 @@ class Like extends InitService {
 
     if (error) throw error;
 
-    return data;
+    return data as Like[];
   }
 }
 
-export const likeService = new Like();
+export const likeService = new LikeService();

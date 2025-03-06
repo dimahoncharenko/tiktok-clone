@@ -23,11 +23,9 @@ export const parseVideoUrls = async (videos: Video[]) => {
   }
 };
 
-export const parseVideoUrlsFromStorage = async (
-  callback?: (parsed: ParsedVideo[]) => void
-) => {
+export const getVideosWithUrlsFromStorage = async () => {
   const videos = await videoService.getAllVideos();
   const parsedVideos = await parseVideoUrls(videos);
 
-  parsedVideos && callback?.(parsedVideos);
+  return parsedVideos;
 };
