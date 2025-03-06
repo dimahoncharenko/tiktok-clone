@@ -1,8 +1,8 @@
-import Ionicons from "@expo/vector-icons/Ionicons";
-import { CameraType, CameraView } from "expo-camera";
-import { useRef, useState } from "react";
 import { TouchableOpacity, View } from "react-native";
+import { CameraType, CameraView } from "expo-camera";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import * as ImagePicker from "expo-image-picker";
+import { useRef, useState } from "react";
 
 import { PermissionDisplayError } from "@/components/permission-display-error";
 import { useAllPermissions } from "@/shared/hooks/useAllPermissions";
@@ -80,6 +80,7 @@ export const CameraControls = ({ recordVideo }: Props) => {
     <CameraView
       mode="video"
       ref={cameraRef}
+      videoQuality="720p"
       style={{
         flex: 1,
       }}

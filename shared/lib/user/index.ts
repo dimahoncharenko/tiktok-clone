@@ -1,4 +1,7 @@
+import { User } from "@/shared/types/user";
 import { InitService } from "../utils";
+import { Follower } from "@/shared/types/follower";
+import { Following } from "@/shared/hooks/useFollowingsFollowers";
 
 type UserRecordParams = {
   email: string;
@@ -16,7 +19,7 @@ class UserService extends InitService {
 
     if (error) throw error;
 
-    return data;
+    return data as User;
   }
 
   async addUser({ email, id, username }: UserRecordParams) {
@@ -37,7 +40,7 @@ class UserService extends InitService {
 
     if (error) throw error;
 
-    return data;
+    return data as User[];
   }
 
   async followUser(followed_user_id: string, follower_user_id: string) {
@@ -67,7 +70,7 @@ class UserService extends InitService {
 
     if (error) throw error;
 
-    return data;
+    return data as Follower[];
   }
 
   async getFollowings(user_id: string) {
@@ -78,7 +81,7 @@ class UserService extends InitService {
 
     if (error) throw error;
 
-    return data;
+    return data as Following[];
   }
 }
 
