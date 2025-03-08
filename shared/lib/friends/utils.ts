@@ -13,7 +13,7 @@ export const calculateFriends = (
   following.forEach((following) =>
     followers.forEach(
       (follower) =>
-        following.follower_user_id === follower.follower_user_id &&
+        following.follower_user_id === follower.followed_user_id &&
         friends.add(follower)
     )
   );

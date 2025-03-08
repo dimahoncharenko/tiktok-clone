@@ -1,4 +1,4 @@
-import { useRouter } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { Text, TextInput, View, TouchableOpacity } from "react-native";
 import { Controller, useForm } from "react-hook-form";
 
@@ -12,7 +12,7 @@ type FormValues = {
 };
 
 export function AuthScreen() {
-  const { signIn } = useAuthContext();
+  const { signIn, user } = useAuthContext();
   const router = useRouter();
 
   const {
@@ -36,7 +36,17 @@ export function AuthScreen() {
   };
 
   return (
-    <View className="bg-white flex-1 justify-center items-center">
+    <View className="bg-white relative flex-1 justify-center items-center">
+      {user?.id && (
+        <Link
+          href="/(tabs)"
+          className="absolute flex-row items-center top-12 left-4"
+        >
+          <Text className="text-lg font-semibold underline">
+            Return To Home
+          </Text>
+        </Link>
+      )}
       <View className="flex flex-col gap-7 w-full p-4">
         <Text className="text-3xl font-black">Log In</Text>
         <View className="relative">

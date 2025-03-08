@@ -2,15 +2,21 @@ import { usePathname } from "expo-router";
 import { useEffect, useState } from "react";
 import { Dimensions, View, VirtualizedList } from "react-native";
 
-import { getVideosWithUrlsFromStorage } from "../lib";
+import {
+  getVideosWithUrlsFromStorage,
+  subscribeToFeedChanges,
+  unsubscribeFromFeedChanges,
+} from "../lib";
 import { FeedVideo } from "@/components/feed-video";
 import { Video } from "@/shared/types/video";
 import { Header } from "@/components/header";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { isArrayNotEmpty } from "@/shared/lib/utils";
 
 export function HomeScreen() {
   const pathname = usePathname();
+
+  const queryClient = useQueryClient();
   const { data: videos } = useQuery({
     queryKey: ["feed"],
     queryFn: async () => {
@@ -20,6 +26,18 @@ export function HomeScreen() {
 
   const [stoppedVideo, setStoppedVideo] = useState(false);
   const [viewableIndex, setViewableIndex] = useState(-1);
+
+  useEffect(() => {
+    const channel = subscribeToFeedChanges({
+      onChangeCallback: () => {
+        queryClient.invalidateQueries({ queryKey: ["feed"] });
+      },
+    });
+
+    return () => {
+      unsubscribeFromFeedChanges(channel);
+    };
+  }, []);
 
   useEffect(() => {
     if (pathname !== "/") {

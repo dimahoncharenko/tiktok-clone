@@ -16,7 +16,7 @@ export const appStateContext = createContext({} as AppStateContext);
 
 type AppStateProviderProps = {
   children: ReactNode;
-  value: AppStateContext;
+  value: Omit<AppStateContext, "friends">;
 };
 
 export const AppStateProvider = ({
