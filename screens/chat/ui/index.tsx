@@ -1,6 +1,5 @@
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useLocalSearchParams } from "expo-router";
-import { VirtualizedList } from "react-native";
+import { Keyboard, VirtualizedList } from "react-native";
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
 
@@ -11,24 +10,23 @@ import {
   unsubscribeFromChat,
 } from "../lib";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useAuthContext } from "@/shared/context/auth-provider";
-import { chatService, getUsersKey } from "@/shared/lib/chat";
 import { CommentCard } from "@/components/comment-card";
 import { AddComment } from "@/components/add-comment";
 import { isArrayNotEmpty } from "@/shared/lib/utils";
 import { ChatMessage } from "@/shared/types/chat";
+import { chatService } from "@/shared/lib/chat";
 import { Header } from "@/components/header";
 
 type FormValues = {
   message: string;
 };
 
-export function ChatScreen() {
-  const params = useLocalSearchParams();
-  const { user } = useAuthContext();
-  const queryClient = useQueryClient();
+type Props = {
+  usersKey: string;
+};
 
-  const usersKey = getUsersKey(`${params.id}`, `${user?.id}`);
+export function ChatScreen({ usersKey }: Props) {
+  const queryClient = useQueryClient();
 
   const { data, refetch } = useQuery({
     queryKey: ["chat", usersKey],
@@ -55,16 +53,15 @@ export function ChatScreen() {
   });
 
   const submit = async (values: FormValues) => {
-    const newMessage = new Message(
-      `${params.id}`,
-      `${user?.id}`,
-      values.message
-    );
+    const [chat_user_id, user_id] = usersKey.split(":");
+
+    const newMessage = new Message(chat_user_id, user_id, values.message);
 
     await sendMessage(newMessage);
 
     await refetch();
     setValue("message", "");
+    Keyboard.dismiss();
   };
 
   return (
@@ -88,7 +85,7 @@ export function ChatScreen() {
                   video_id: "",
                   video_user_id: "",
                 }}
-                username={`${user?.username}`}
+                username={`${item?.User.username}`}
               />
             );
           }}

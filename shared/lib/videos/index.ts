@@ -1,6 +1,6 @@
-import { supabase } from "@/shared/config/supabase.config";
 import { Video } from "@/shared/types/video";
 import { InitService } from "../utils";
+import { Friend } from "../friends/utils";
 
 type VideoRecordParams = {
   uri: string;
@@ -18,6 +18,23 @@ export class VideoService extends InitService {
     const { data, error } = await this.client
       .from("Video")
       .select("*, User(*)")
+      .order("created_at", { ascending: false });
+
+    if (error) throw error;
+
+    return data as Video[];
+  }
+
+  async getVideosFromFriends(friends: Friend[]) {
+    if (!friends.length) return [];
+
+    const { error, data } = await this.client
+      .from("Video")
+      .select("*, User(*)")
+      .in(
+        "user_id",
+        friends.map((friend) => friend.User.id)
+      )
       .order("created_at", { ascending: false });
 
     if (error) throw error;
@@ -49,21 +66,6 @@ export class VideoService extends InitService {
         upsert: false,
         cacheControl: "3600000000",
       });
-
-    if (error) throw error;
-
-    return data;
-  }
-
-  static async getSignedUrls(videos: Video[]) {
-    const cacheTime = 60 * 60 * 24 * 7;
-
-    const { data, error } = await supabase.storage
-      .from("videos")
-      .createSignedUrls(
-        videos.map((video) => video.uri),
-        cacheTime
-      );
 
     if (error) throw error;
 

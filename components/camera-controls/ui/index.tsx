@@ -23,7 +23,7 @@ export const CameraControls = ({ recordVideo }: Props) => {
     requestRecordPermissions,
   } = useAllPermissions();
 
-  if (!cameraPermitted || !recordPermissions)
+  if (!cameraPermitted?.granted || !recordPermissions)
     return (
       <PermissionDisplayError
         requestPermission={async () => {
@@ -32,6 +32,9 @@ export const CameraControls = ({ recordVideo }: Props) => {
         }}
       />
     );
+
+  console.log("RECORD PERMISSIONS: ", recordPermissions);
+  console.log("CAMERA PERMISSIONS: ", cameraPermitted);
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
