@@ -18,7 +18,7 @@ const queryClient = new QueryClient();
 
 export default function RootLayout() {
   const [loaded] = useFonts({
-    SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
+    Audiowide: require("../assets/fonts/Audiowide-Regular.ttf"),
   });
 
   useEffect(() => {

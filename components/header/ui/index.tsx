@@ -1,7 +1,8 @@
-import { cn } from "@/shared/lib/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { Text, TouchableOpacity, View } from "react-native";
+
+import { cn } from "@/shared/lib/utils";
 
 type Props = {
   title: string;
@@ -47,7 +48,10 @@ export const Header = ({
       </View>
       <View>
         <Text
-          className={cn("text-white text-3xl font-semibold", classNames?.title)}
+          className={cn(
+            "text-white text-3xl font-semibold font-audiowide",
+            classNames?.title
+          )}
           style={{
             color,
           }}
