@@ -22,6 +22,7 @@ type DistributionContext = {
   following: Following[];
   followers: Follower[];
   getLikesByUser: (user: User) => void;
+  getLikesByVideoUser: (user: User) => Promise<void>;
   resetAppState: () => void;
   setLikes: Dispatch<SetStateAction<Like[]>>;
   getFollowings: (user: string) => Promise<void>;
@@ -67,6 +68,16 @@ export const DistributionContext = ({ children }: Props) => {
     }
   };
 
+  const getLikesByVideoUser = async (user: User) => {
+    try {
+      const response = await likeService.getLikesByVideoUser(user.id);
+      setLikes(() => response);
+    } catch (err) {
+      setLikes([]);
+      console.error(err);
+    }
+  };
+
   const resetAppState = () => {
     setLikes([]);
     setFollowings([]);
@@ -85,6 +96,7 @@ export const DistributionContext = ({ children }: Props) => {
         getFollowings,
         getFollowers,
         setFollowers,
+        getLikesByVideoUser,
         setFollowings,
       }}
     >
@@ -98,6 +110,8 @@ export const DistributionContext = ({ children }: Props) => {
             setLikes,
             followUser,
             unfollowUser,
+            getLikesByUser,
+            getLikesByVideoUser,
           }}
         >
           {children}

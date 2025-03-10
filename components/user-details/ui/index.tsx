@@ -7,9 +7,15 @@ type Props = {
   user?: User;
   following: number;
   followers: number;
+  likesCount: number;
 };
 
-export const UserDetails = ({ followers, following, user }: Props) => {
+export const UserDetails = ({
+  followers,
+  following,
+  user,
+  likesCount,
+}: Props) => {
   const { signOut, user: currentUser } = useAuthContext();
 
   const changeProfilePicture = async () => {};
@@ -36,7 +42,7 @@ export const UserDetails = ({ followers, following, user }: Props) => {
         </View>
         <View className="items-center">
           <Text className="font-semibold mb-1">Likes</Text>
-          <Text>1000</Text>
+          <Text>{likesCount}</Text>
         </View>
       </View>
       {!user && (

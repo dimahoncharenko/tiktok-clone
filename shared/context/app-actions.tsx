@@ -7,6 +7,7 @@ import { Follower } from "../types/follower";
 
 type AppActionsContext = {
   getLikesByUser: (user: User) => Promise<void>;
+  getLikesByVideoUser: (user: User) => Promise<void>;
   resetAppState: () => void;
   getFollowers: (user: string) => Promise<void>;
   getFollowings: (user: string) => Promise<void>;
@@ -21,12 +22,14 @@ type AppActionsProviderProps = {
   children: ReactNode;
   value: {
     setLikes: Dispatch<SetStateAction<Like[]>>;
+    getLikesByUser: (user: User) => Promise<void>;
     setFollowers: Dispatch<SetStateAction<Follower[]>>;
     setFollowings: Dispatch<SetStateAction<Follower[]>>;
     getFollowers: (user: string) => Promise<void>;
     getFollowings: (user: string) => Promise<void>;
     followUser: (user: User, follow_id: string) => Promise<void>;
     unfollowUser: (user: User, follow_id: string) => Promise<void>;
+    getLikesByVideoUser: (user: User) => Promise<void>;
   };
 };
 
@@ -40,18 +43,10 @@ export const AppActionsProvider = ({
     setLikes,
     followUser,
     unfollowUser,
+    getLikesByUser,
+    getLikesByVideoUser,
   },
 }: AppActionsProviderProps) => {
-  const getLikesByUser = async (user: User) => {
-    try {
-      const response = await likeService.getLikesByUser(user.id);
-      setLikes(() => response);
-    } catch (err) {
-      setLikes([]);
-      console.error(err);
-    }
-  };
-
   const resetAppState = () => {
     setLikes([]);
     setFollowings([]);
@@ -61,6 +56,7 @@ export const AppActionsProvider = ({
   return (
     <appActionsContext.Provider
       value={{
+        getLikesByVideoUser,
         getLikesByUser,
         resetAppState,
         getFollowers,
