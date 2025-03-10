@@ -23,7 +23,7 @@ export function ActivityScreen() {
 
   const { data: likes } = useQuery({
     queryKey: ["likes", user?.id],
-    queryFn: async () => await likeService.getLikesByVideo(user!.id),
+    queryFn: async () => await likeService.getLikesByVideoUser(user!.id),
   });
 
   const activities = useMemo(() => {

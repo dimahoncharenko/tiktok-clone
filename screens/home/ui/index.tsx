@@ -1,5 +1,5 @@
 import { usePathname } from "expo-router";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Dimensions, View, VirtualizedList } from "react-native";
 
 import {
@@ -12,9 +12,14 @@ import { Video } from "@/shared/types/video";
 import { Header } from "@/components/header";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { isArrayNotEmpty } from "@/shared/lib/utils";
+import { useAuthContext } from "@/shared/context/auth-provider";
+import { DISTRIBUTION_CONTEXT } from "@/shared/context/distribution-context";
 
 export function HomeScreen() {
   const pathname = usePathname();
+
+  const { user } = useAuthContext();
+  const { getLikesByUser } = useContext(DISTRIBUTION_CONTEXT.appActionsContext);
 
   const queryClient = useQueryClient();
   const { data: videos } = useQuery({
@@ -26,6 +31,14 @@ export function HomeScreen() {
 
   const [stoppedVideo, setStoppedVideo] = useState(false);
   const [viewableIndex, setViewableIndex] = useState(-1);
+
+  useEffect(() => {
+    if (!user || pathname !== "/") return;
+
+    (async () => {
+      await getLikesByUser(user);
+    })();
+  }, [user, pathname]);
 
   useEffect(() => {
     const channel = subscribeToFeedChanges({

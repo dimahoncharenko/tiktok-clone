@@ -3,7 +3,6 @@ import { useState } from "react";
 
 import { VideoPlayer } from "@/components/video-player";
 import { CameraControls } from "@/components/camera-controls";
-import { Camera } from "expo-camera";
 
 export function CameraScreen() {
   const [videoUri, setVideoUri] = useState("");
