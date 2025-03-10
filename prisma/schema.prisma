@@ -25,6 +25,7 @@ model User {
   followers  Follower[]
   comments   Comment[]
   chats      Chat[]
+  avatar_uri String     @default("https://placehold.co/40x40")
 }
 
 model Video {

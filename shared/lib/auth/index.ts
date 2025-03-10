@@ -1,6 +1,11 @@
-import { AuthChangeEvent, Session } from "@supabase/supabase-js";
+import {
+  AuthChangeEvent,
+  RealtimeChannel,
+  Session,
+} from "@supabase/supabase-js";
 
 import { InitService } from "../utils";
+import { supabase } from "@/shared/config/supabase.config";
 
 type SignInCommonStrategy = {
   email: string;
@@ -47,3 +52,18 @@ class AuthService extends InitService {
 }
 
 export const authService = new AuthService();
+
+export const subscribeToUserChanges = (callback: () => void) => {
+  return supabase
+    .channel("user")
+    .on(
+      "postgres_changes",
+      { event: "UPDATE", schema: "public", table: "User" },
+      callback
+    )
+    .subscribe();
+};
+
+export const unsubscribeFromUserChanges = (channel: RealtimeChannel) => {
+  supabase.removeChannel(channel);
+};

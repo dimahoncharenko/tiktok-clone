@@ -6,9 +6,10 @@ import { User } from "@/shared/types/user";
 
 type Props = {
   user: User;
+  avatar: string;
 };
 
-export const FriendCard = ({ user }: Props) => {
+export const FriendCard = ({ user, avatar }: Props) => {
   const router = useRouter();
 
   return (
@@ -25,7 +26,7 @@ export const FriendCard = ({ user }: Props) => {
       icon={
         <View>
           <Image
-            source={{ uri: "https://placehold.co/40x40" }}
+            source={{ uri: avatar || "https://placehold.co/40x40" }}
             className="size-12 bg-black rounded-full"
           />
         </View>
