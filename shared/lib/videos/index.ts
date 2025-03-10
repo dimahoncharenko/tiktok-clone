@@ -1,6 +1,7 @@
 import { Video } from "@/shared/types/video";
-import { InitService } from "../utils";
 import { Friend } from "../friends/utils";
+import { InitService } from "../utils";
+import { SUPABASE_STORAGE_KEYS } from "@/shared/constants/storage";
 
 type VideoRecordParams = {
   uri: string;
@@ -61,7 +62,7 @@ export class VideoService extends InitService {
 
   async addVideoToStorageAndQuery({ body, name }: VideoRequestParams) {
     const { data, error } = await this.client.storage
-      .from("videos")
+      .from(SUPABASE_STORAGE_KEYS.VIDEOS)
       .upload(name, body, {
         upsert: false,
         cacheControl: "3600000000",

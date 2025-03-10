@@ -1,3 +1,4 @@
+import { SameAs } from ".";
 import { User } from "./user";
 
 export type Follower = {
@@ -7,3 +8,5 @@ export type Follower = {
   followed_user_id: string;
   User: User;
 };
+
+export type Following = SameAs<Follower>;

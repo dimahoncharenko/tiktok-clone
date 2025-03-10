@@ -1,21 +1,12 @@
-import {
-  Dispatch,
-  ReactNode,
-  SetStateAction,
-  createContext,
-  useState,
-} from "react";
+import { Dispatch, ReactNode, SetStateAction, createContext } from "react";
 
 import { User } from "../types/user";
-import { likeService } from "../lib/likes";
 import { Like } from "../types/like";
-import { Follower } from "../types/follower";
-import { SameAs } from "../types";
 import { useFollowingsFollowers } from "../hooks/useFollowingsFollowers";
 import { AppActionsProvider, appActionsContext } from "./app-actions";
 import { AppStateProvider, appStateContext } from "./app-state";
-
-type Following = SameAs<Follower>;
+import { useLikes } from "../hooks/useLikes";
+import { Follower, Following } from "../types/follower";
 
 type DistributionContext = {
   likes: Like[];
@@ -46,7 +37,6 @@ type Props = {
 };
 
 export const DistributionContext = ({ children }: Props) => {
-  const [likes, setLikes] = useState<Like[]>([]);
   const {
     setFollowers,
     setFollowings,
@@ -58,25 +48,7 @@ export const DistributionContext = ({ children }: Props) => {
     getFollowings,
   } = useFollowingsFollowers();
 
-  const getLikesByUser = async (user: User) => {
-    try {
-      const response = await likeService.getLikesByUser(user.id);
-      setLikes(() => response);
-    } catch (err) {
-      setLikes([]);
-      console.error(err);
-    }
-  };
-
-  const getLikesByVideoUser = async (user: User) => {
-    try {
-      const response = await likeService.getLikesByVideoUser(user.id);
-      setLikes(() => response);
-    } catch (err) {
-      setLikes([]);
-      console.error(err);
-    }
-  };
+  const { getLikesByUser, getLikesByVideoUser, likes, setLikes } = useLikes();
 
   const resetAppState = () => {
     setLikes([]);

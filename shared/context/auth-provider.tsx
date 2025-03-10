@@ -8,7 +8,11 @@ import {
 import { AuthResponse, AuthTokenResponsePassword } from "@supabase/supabase-js";
 import { useRouter } from "expo-router";
 
-import { authService } from "../lib/auth";
+import {
+  authService,
+  subscribeToUserChanges,
+  unsubscribeFromUserChanges,
+} from "../lib/auth";
 import { userService } from "../lib/user";
 import { DISTRIBUTION_CONTEXT } from "./distribution-context";
 
@@ -17,6 +21,7 @@ type User = {
   email: string;
   id: string;
   username: string;
+  avatar_uri: string;
 };
 
 type AuthProviderContext = {
@@ -63,17 +68,39 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         if (!session) return router.push("/(auth)");
 
         const user = await getUser(session.user.id);
+
+        if (!user) throw new Error("Cannot get user data!");
+
         setUser(user);
 
         await getLikesByUser(user);
-        await getFollowings(user);
-        await getFollowers(user);
+        await getFollowings(user.id);
+        await getFollowers(user.id);
+
         router.push("/(tabs)");
       }
     );
 
     return () => {
       return unsubscribe();
+    };
+  }, []);
+
+  useEffect(() => {
+    const channel = subscribeToUserChanges(async () => {
+      console.log("User is about to be updated");
+      if (!user?.id) return;
+      const updatedUser = await getUser(user.id);
+
+      if (!updatedUser) throw new Error("Cannot get user data!");
+
+      console.log("User is updated");
+
+      setUser(updatedUser);
+    });
+
+    return () => {
+      unsubscribeFromUserChanges(channel);
     };
   }, []);
 
@@ -84,6 +111,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     });
 
     const user = await getUser(response.data.user.id);
+
+    if (!user) throw new Error("Cannot get user date!");
+
     setUser(user);
 
     await getLikesByUser(user);
@@ -93,9 +123,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const getUser = async (id: string) => {
     try {
-      const data = await userService.getUser(id);
+      const userData = await userService.getUser(id);
 
-      return data;
+      return userData;
     } catch (err) {
       console.error(err);
     }
@@ -106,6 +136,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       await userService.addUser({ email, id, username });
 
       const user = await getUser(id);
+
+      if (!user) throw new Error("Cannot get user date!");
 
       setUser(user);
     } catch (err) {

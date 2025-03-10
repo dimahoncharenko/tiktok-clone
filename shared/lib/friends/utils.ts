@@ -1,12 +1,14 @@
-import { Following } from "@/shared/hooks/useFollowingsFollowers";
+import {
+  FollowerWithAvatar,
+  FollowingWithAvatar,
+} from "@/shared/hooks/useFollowingsFollowers";
 import { SameAs } from "@/shared/types";
-import { Follower } from "@/shared/types/follower";
 
-export type Friend = SameAs<Follower>;
+export type Friend = SameAs<FollowerWithAvatar>;
 
 export const calculateFriends = (
-  following: Following[],
-  followers: Follower[]
+  following: FollowingWithAvatar[],
+  followers: FollowerWithAvatar[]
 ): Friend[] => {
   let friends = new Set<Friend>();
 

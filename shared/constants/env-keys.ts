@@ -4,4 +4,5 @@ export const KEYS = {
   DIRECT_DB_URL: `${process.env.DIRECT_DB_URL}`,
   TRANSACTIONAL_DB_URL: `${process.env.TRANSACTIONAL_DB_URL}`,
   CURRENT_ENV: `${process.env.NODE_ENV}`,
+  AVATAR_STORAGE_URL: `${process.env.EXPO_PUBLIC_AVATAR_STORAGE_URL}`,
 };

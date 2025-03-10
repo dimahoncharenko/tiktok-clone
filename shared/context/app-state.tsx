@@ -1,14 +1,13 @@
 import { ReactNode, createContext, useEffect, useState } from "react";
 
 import { Like } from "../types/like";
-import { Following } from "../hooks/useFollowingsFollowers";
-import { Follower } from "../types/follower";
+import { FollowingWithAvatar } from "../hooks/useFollowingsFollowers";
 import { Friend, calculateFriends } from "../lib/friends/utils";
 
 type AppStateContext = {
   likes: Like[];
-  following: Following[];
-  followers: Follower[];
+  following: FollowingWithAvatar[];
+  followers: FollowingWithAvatar[];
   friends: Friend[];
 };
 
