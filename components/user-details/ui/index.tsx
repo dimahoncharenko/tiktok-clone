@@ -25,14 +25,21 @@ export const UserDetails = ({
   const changeProfilePicture = async () => {
     if (user && currentUser?.id !== user?.id) return;
 
-    const result = await ImagePicker.launchImageLibraryAsync({
+    console.log("Selecting image...", currentUser);
+
+    let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: "images",
-      allowsEditing: true,
+      allowsEditing: false,
+      allowsMultipleSelection: false,
       aspect: [4, 3],
       quality: 0.1,
     });
 
+    console.log("RESULT: ", result);
+
     if (result.assets) {
+      console.log("Avatar is about to be saved!");
+
       const res = await saveUserAvatar({
         uri: result.assets[0].uri,
         user_id: `${currentUser?.id}`,
@@ -42,6 +49,8 @@ export const UserDetails = ({
         id: `${currentUser?.id}`,
         avatar_uri: KEYS.AVATAR_STORAGE_URL + res.fullPath,
       });
+
+      console.log("Avatar is saved!");
     }
   };
 

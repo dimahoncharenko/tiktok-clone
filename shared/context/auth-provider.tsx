@@ -88,13 +88,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   useEffect(() => {
     const channel = subscribeToUserChanges(async () => {
-      console.log("User is about to be updated");
       if (!user?.id) return;
       const updatedUser = await getUser(user.id);
 
       if (!updatedUser) throw new Error("Cannot get user data!");
-
-      console.log("User is updated");
 
       setUser(updatedUser);
     });
