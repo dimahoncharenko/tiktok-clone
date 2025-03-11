@@ -1,15 +1,36 @@
 import { User } from "@/shared/types/user";
 import { InitService } from "../utils";
 import { Follower } from "@/shared/types/follower";
-import { Following } from "@/shared/hooks/useFollowingsFollowers";
+import { Following } from "@/shared/types/follower";
 
 type UserRecordParams = {
   email: string;
   id: string;
   username: string;
+  avatar_uri?: string;
 };
 
 class UserService extends InitService {
+  async getAllUsers() {
+    const { data, error } = await this.client.from("User").select("*");
+
+    if (error) throw error;
+
+    return data as User[];
+  }
+
+  async updateUser({
+    id,
+    ...params
+  }: { id: string } & Partial<Omit<UserRecordParams, "id">>) {
+    const { error } = await this.client
+      .from("User")
+      .update(params)
+      .eq("id", id);
+
+    if (error) throw error;
+  }
+
   async getUser(id: string) {
     const { data, error } = await this.client
       .from("User")

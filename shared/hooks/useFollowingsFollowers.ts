@@ -1,11 +1,8 @@
 import { useState } from "react";
 
-import { SameAs } from "../types";
-import { Follower } from "../types/follower";
+import { Follower, Following } from "../types/follower";
 import { userService } from "../lib/user";
 import { User } from "../types/user";
-
-export type Following = SameAs<Follower>;
 
 export const useFollowingsFollowers = () => {
   const [following, setFollowings] = useState<Following[]>([]);
@@ -14,7 +11,9 @@ export const useFollowingsFollowers = () => {
   const getFollowings = async (user_id: string) => {
     try {
       const res = await fetchFollowings(user_id);
-      setFollowings(() => res || []);
+      if (!res) throw new Error("There is no response fetching followings!");
+
+      setFollowings(res);
     } catch (err) {
       setFollowings([]);
       console.error(err);
@@ -33,7 +32,9 @@ export const useFollowingsFollowers = () => {
   const getFollowers = async (user_id: string) => {
     try {
       const res = await fetchFollowers(user_id);
-      setFollowers(() => res || []);
+      if (!res) throw new Error("There is no response fetching followers!");
+
+      setFollowers(res);
     } catch (err) {
       setFollowers([]);
       console.error(err);

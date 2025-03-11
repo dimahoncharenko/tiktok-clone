@@ -1,9 +1,12 @@
 import { Dispatch, ReactNode, SetStateAction, createContext } from "react";
 
 import { User } from "../types/user";
-import { likeService } from "../lib/likes";
 import { Like } from "../types/like";
 import { Follower } from "../types/follower";
+import {
+  FollowerWithAvatar,
+  FollowingWithAvatar,
+} from "../hooks/useFollowingsFollowers";
 
 type AppActionsContext = {
   getLikesByUser: (user: User) => Promise<void>;
@@ -23,8 +26,8 @@ type AppActionsProviderProps = {
   value: {
     setLikes: Dispatch<SetStateAction<Like[]>>;
     getLikesByUser: (user: User) => Promise<void>;
-    setFollowers: Dispatch<SetStateAction<Follower[]>>;
-    setFollowings: Dispatch<SetStateAction<Follower[]>>;
+    setFollowers: Dispatch<SetStateAction<FollowerWithAvatar[]>>;
+    setFollowings: Dispatch<SetStateAction<FollowingWithAvatar[]>>;
     getFollowers: (user: string) => Promise<void>;
     getFollowings: (user: string) => Promise<void>;
     followUser: (user: User, follow_id: string) => Promise<void>;

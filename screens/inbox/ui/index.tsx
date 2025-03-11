@@ -31,7 +31,11 @@ export function InboxScreen() {
           icon={MenuItem.ActivityIcon()}
         />
         {friends.map((friend) => (
-          <FriendCard key={friend.id} user={friend.User} />
+          <FriendCard
+            key={friend.id}
+            user={friend.User}
+            avatar={friend.avatar_uri}
+          />
         ))}
       </View>
     </SafeAreaView>

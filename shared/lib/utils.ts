@@ -3,7 +3,8 @@ import clsx, { ClassValue } from "clsx";
 
 import { supabase } from "../config/supabase.config";
 import { Video } from "../types/video";
-import { VideoService } from "./videos";
+import { Follower, Following } from "../types/follower";
+import { SUPABASE_STORAGE_KEYS } from "../constants/storage";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));

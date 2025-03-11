@@ -1,5 +1,5 @@
 import { View } from "react-native";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { Header } from "@/components/header";
@@ -10,6 +10,8 @@ import { useAuthContext } from "@/shared/context/auth-provider";
 import { useFollowingsFollowers } from "@/shared/hooks/useFollowingsFollowers";
 import { useQuery } from "@tanstack/react-query";
 import { FollowStatus, isItFollowed } from "../lib/utils";
+import { DISTRIBUTION_CONTEXT } from "@/shared/context/distribution-context";
+import { useIsCurrentTab } from "@/shared/hooks/useIsCurrentTab";
 
 type Props = {
   user_id: string;
@@ -33,9 +35,31 @@ export function UserScreen({ user_id }: Props) {
     following,
   } = useFollowingsFollowers();
 
+  const { likes } = useContext(DISTRIBUTION_CONTEXT.appStateContext);
+
+  const isCurrentPath = useIsCurrentTab(`/user/${user_id}`);
+
+  const { getLikesByVideoUser } = useContext(
+    DISTRIBUTION_CONTEXT.appActionsContext
+  );
+
   const followStatus = new FollowStatus(followers, user?.id, authUser?.id);
 
   const [isFollowed, setIsFollowed] = useState(isItFollowed(followStatus));
+
+  useEffect(() => {
+    if (!isCurrentPath) return;
+
+    (async () => {
+      if (!user) return;
+
+      try {
+        await getLikesByVideoUser(user);
+      } catch (err) {
+        console.error(err);
+      }
+    })();
+  }, [user, isCurrentPath]);
 
   useEffect(() => {
     setIsFollowed(isItFollowed(followStatus));
@@ -58,6 +82,7 @@ export function UserScreen({ user_id }: Props) {
             followers={followers.length}
             following={following.length}
             user={user}
+            likesCount={likes.length}
           />
           {isFollowed ? (
             <Button
